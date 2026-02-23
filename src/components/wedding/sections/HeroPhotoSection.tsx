@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import mainPhoto from "../../../assets/img/MpQzplg2hn.png";
+import mainPhoto from "@/assets/img/흑백1.png";
 
 type HeroPhotoSectionProps = {
   debugClass?: string;

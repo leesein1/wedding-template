@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { useRevealOnScroll } from "../../hooks/useRevealOnScroll";
+import { useRevealOnScroll } from "@/hooks/useRevealOnScroll";
 
 type RevealProps = {
   children: ReactNode;

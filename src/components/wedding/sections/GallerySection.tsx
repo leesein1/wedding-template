@@ -4,11 +4,11 @@ type GallerySectionProps = {
   debugClass?: string;
 };
 
-import g1 from "../../../assets/img/메인사진1.jpg";
-import g2 from "../../../assets/img/반지사진1.jpg";
-import g3 from "../../../assets/img/어린_이세인.png";
-import g4 from "../../../assets/img/어린_유화진.png";
-import g5 from "../../../assets/img/MpQzplg2hn.png";
+import g1 from "@/assets/img/컬러1.png";
+import g2 from "@/assets/img/컬러2.png";
+import g3 from "@/assets/img/흑백1.png";
+import g4 from "@/assets/img/야외컬러2.png";
+import g5 from "@/assets/img/야외컬러1.png";
 
 function clampIndex(i: number, len: number) {
   if (len <= 0) return 0;

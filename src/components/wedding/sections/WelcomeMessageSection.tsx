@@ -1,4 +1,4 @@
-import welcomeImage from "../../../assets/img/메인사진1.jpg";
+import welcomeImage from "@/assets/img/컬러2.png";
 
 type WelcomeMessageSectionProps = {
   debugClass?: string;

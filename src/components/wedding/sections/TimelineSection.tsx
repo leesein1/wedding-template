@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
 // 이미지 변경 필요
-import t1 from "../../../assets/img/반지사진1.jpg";
-import t2 from "../../../assets/img/반지사진1.jpg";
-import t3 from "../../../assets/img/반지사진1.jpg";
-import t4 from "../../../assets/img/반지사진1.jpg";
+import t1 from "@/assets/img/컬러1.png";
+import t2 from "@/assets/img/컬러2.png";
+import t3 from "@/assets/img/야외컬러1.png";
+import t4 from "@/assets/img/야외컬러2.png";
 
 type TimelineSectionProps = { debugClass?: string };
 

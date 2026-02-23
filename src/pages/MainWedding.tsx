@@ -1,6 +1,6 @@
-import Reveal from "../components/common/Reveal";
-import DateTitleSection from "../components/wedding/sections/DateTitleSection";
-import AboutUsSection from "../components/wedding/sections/AboutUsSection";
+import Reveal from "@/components/common/Reveal";
+import DateTitleSection from "@/components/wedding/sections/DateTitleSection";
+import AboutUsSection from "@/components/wedding/sections/AboutUsSection";
 import {
   AccountSection,
   CalendarSection,
@@ -9,11 +9,10 @@ import {
   HeaderSection,
   HeroPhotoSection,
   LocationSection,
-  ShareSection,
   WelcomeMessageSection,
-} from "../components/wedding/sections";
-import TimelineSection from "../components/wedding/sections/TimelineSection";
-import FooterSection from "../components/wedding/sections/FooterSection";
+} from "@/components/wedding/sections";
+import TimelineSection from "@/components/wedding/sections/TimelineSection";
+import FooterSection from "@/components/wedding/sections/FooterSection";
 
 export default function MainWedding() {
   const debug = import.meta.env.DEV;

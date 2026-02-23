@@ -1,5 +1,5 @@
-import groomImg from "../../../assets/img/어린_이세인.png"; 
-import brideImg from "../../../assets/img/어린_유화진.png";
+import groomImg from "@/assets/img/야외컬러1.png"; 
+import brideImg from "@/assets/img/야외컬러2.png";
 
 type BrideGroomSectionProps = {
   debugClass?: string;
