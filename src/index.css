@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "RememberNight";
+  src: url("./assets/fonts/RememberNight.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "WeddingSignature";
+  src: url("./assets/fonts/TheWeddingSignature-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+/* ✅ 레이아웃 꼬임 방지용 최소 리셋 */
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+}
+
+body {
+  overflow-x: hidden;
+}
+.bar {
+  width: 5px;
+  height: 50%;
+  background: white;
+  animation: equalize 1s infinite ease-in-out;
+}
+
+.delay-1 {
+  animation-delay: 0.3s;
+}
+
+.delay-2 {
+  animation-delay: 0.5s;
+}
+
+@keyframes equalize {
+  0% { height: 20%; }
+  50% { height: 60%; }
+  100% { height: 20%; }
+}
+
+@keyframes spread {
+  0% {
+    opacity: 0;
+    letter-spacing: 0.02em;
+    transform: translateX(0) scaleX(0.92);
+  }
+  60% {
+    opacity: 1;
+    letter-spacing: 0.35em;
+    transform: translateX(0) scaleX(1);
+  }
+  100% {
+    opacity: 0.85;
+    letter-spacing: 0.45em;
+    transform: translateX(0) scaleX(1.02);
+  }
+}
+
+.animate-spread {
+  animation: spread 1.3s ease-out both;
+}
+
+.decorative-svg,
+.decorative-svg * {
+  pointer-events: none !important;
+}
+
+/* 장식용 SVG/캔버스 오버레이가 클릭/터치 먹는 문제 방지 */
+svg[style*="position: absolute"],
+svg[style*="position:absolute"] {
+  pointer-events: none !important;
+}
