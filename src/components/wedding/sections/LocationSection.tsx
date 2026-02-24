@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 declare global {
   interface Window {
@@ -8,7 +8,7 @@ declare global {
         LatLng: new (lat: number, lng: number) => unknown;
         Map: new (
           container: HTMLElement,
-          options: { center: unknown; level: number }
+          options: { center: unknown; level: number },
         ) => {
           setDraggable?: (v: boolean) => void;
           setZoomable?: (v: boolean) => void;
@@ -63,7 +63,13 @@ const GUIDE = {
   },
 };
 
-function Icon({ children, label }: { children: React.ReactNode; label: string }) {
+function Icon({
+  children,
+  label,
+}: {
+  children: React.ReactNode;
+  label: string;
+}) {
   return (
     <span
       className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#e8e8e8] bg-white shadow-[0_6px_14px_rgba(0,0,0,0.06)]"
@@ -85,7 +91,12 @@ function CarIcon() {
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <path d="M6.5 14.5h11" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+      <path
+        d="M6.5 14.5h11"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+      />
       <path
         d="M6.8 18.8a1.6 1.6 0 1 0 0-3.2 1.6 1.6 0 0 0 0 3.2ZM17.2 18.8a1.6 1.6 0 1 0 0-3.2 1.6 1.6 0 0 0 0 3.2Z"
         stroke="currentColor"
@@ -104,15 +115,30 @@ function CarIcon() {
 function BusIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-      <path d="M6.5 19.5h11" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
-      <path d="M7 19.5v1.2M17 19.5v1.2" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+      <path
+        d="M6.5 19.5h11"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+      />
+      <path
+        d="M7 19.5v1.2M17 19.5v1.2"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+      />
       <path
         d="M7 3.7h10c1.5 0 2.5 1.2 2.5 2.7v10.1c0 1.7-1.3 3-3 3H7.5c-1.7 0-3-1.3-3-3V6.4C4.5 4.9 5.5 3.7 7 3.7Z"
         stroke="currentColor"
         strokeWidth="1.7"
         strokeLinejoin="round"
       />
-      <path d="M6.7 7h10.6M6.7 10.2h10.6" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+      <path
+        d="M6.7 7h10.6M6.7 10.2h10.6"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+      />
       <path
         d="M8.2 15.9a1.2 1.2 0 1 0 0-2.4 1.2 1.2 0 0 0 0 2.4ZM15.8 15.9a1.2 1.2 0 1 0 0-2.4 1.2 1.2 0 0 0 0 2.4Z"
         stroke="currentColor"
@@ -125,15 +151,30 @@ function BusIcon() {
 function SubwayIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-      <path d="M8 20.3l-1 1.3M16 20.3l1 1.3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+      <path
+        d="M8 20.3l-1 1.3M16 20.3l1 1.3"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+      />
       <path
         d="M8 3.7h8c1.8 0 3 1.3 3 3v9.8c0 2.2-1.8 4-4 4H9c-2.2 0-4-1.8-4-4V6.7c0-1.7 1.2-3 3-3Z"
         stroke="currentColor"
         strokeWidth="1.7"
         strokeLinejoin="round"
       />
-      <path d="M7.4 8.2h9.2" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
-      <path d="M10 15.8h4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+      <path
+        d="M7.4 8.2h9.2"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+      />
+      <path
+        d="M10 15.8h4"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+      />
       <path
         d="M9.2 17.8a1.1 1.1 0 1 0 0-2.2 1.1 1.1 0 0 0 0 2.2ZM14.8 17.8a1.1 1.1 0 1 0 0-2.2 1.1 1.1 0 0 0 0 2.2Z"
         stroke="currentColor"
@@ -153,13 +194,29 @@ function ParkingIcon() {
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <path d="M6.5 3.8v16.4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
-      <path d="M5 21h14" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+      <path
+        d="M6.5 3.8v16.4"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+      />
+      <path
+        d="M5 21h14"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }
 
-function GuideHeader({ icon, title }: { icon: React.ReactNode; title: string }) {
+function GuideHeader({
+  icon,
+  title,
+}: {
+  icon: React.ReactNode;
+  title: string;
+}) {
   return (
     <div className="flex items-center gap-3">
       {icon}
@@ -176,7 +233,9 @@ function Badge({ text }: { text: string }) {
   );
 }
 
-export default function LocationSection({ debugClass = "" }: LocationSectionProps) {
+export default function LocationSection({
+  debugClass = "",
+}: LocationSectionProps) {
   const mapRef = useRef<HTMLDivElement | null>(null);
   const [error, setError] = useState("");
 
@@ -194,14 +253,16 @@ export default function LocationSection({ debugClass = "" }: LocationSectionProp
         if (!mapRef.current || !window.kakao?.maps) return;
 
         const center = new window.kakao.maps.LatLng(VENUE.lat, VENUE.lng);
-        const map = new window.kakao.maps.Map(mapRef.current, { center, level: 3 });
+        const map = new window.kakao.maps.Map(mapRef.current, {
+          center,
+          level: 3,
+        });
         map.setDraggable?.(true);
         map.setZoomable?.(true);
 
         const marker = new window.kakao.maps.Marker({ position: center });
         marker.setMap(map);
 
-        // 처음 표시 깨짐 방지
         setTimeout(() => (map as any)?.relayout?.(), 120);
       });
     };
@@ -211,7 +272,9 @@ export default function LocationSection({ debugClass = "" }: LocationSectionProp
       return;
     }
 
-    let script = document.querySelector<HTMLScriptElement>('script[data-kakao-maps-sdk="true"]');
+    let script = document.querySelector<HTMLScriptElement>(
+      'script[data-kakao-maps-sdk="true"]',
+    );
 
     const onLoad = () => renderMap();
     const onErr = () => setError("카카오맵 스크립트를 불러오지 못했습니다.");
@@ -237,30 +300,33 @@ export default function LocationSection({ debugClass = "" }: LocationSectionProp
     <section className={`px-6 py-10 bg-white ${debugClass}`}>
       <div className="max-w-[420px] mx-auto">
         <div className="text-center">
+          {/* ✅ LOCATION만 Elsie */}
           <div
             style={{ fontFamily: "'Elsie', serif" }}
             className="text-[28px] tracking-[0.08em] text-[#1a1a1a]"
           >
             LOCATION
           </div>
+
+          {/* ✅ 나머지는 전역 system 폰트 상속 */}
           <p className="mt-5 text-[15px] text-[#2a2a2a]">{VENUE.name}</p>
           <p className="mt-2 text-[13px] text-[#6b6b6b]">{VENUE.address}</p>
         </div>
 
-        {/* ✅ z-index 올려서 혹시 남아있는 overlay보다 위로 */}
         <div className="relative z-20 mt-6 overflow-hidden rounded-2xl border border-[#ebebeb] shadow-[0_18px_35px_rgba(0,0,0,0.06)]">
           <div
             ref={mapRef}
             className="h-[260px] w-full bg-[#f6f6f6]"
             style={{
-              // ✅ 기본은 두고(스크롤과 공존), overlay만 막는 방식
               pointerEvents: "auto",
               touchAction: "pan-x pan-y",
             }}
           />
         </div>
 
-        {error ? <p className="mt-3 text-[12px] text-red-500">{error}</p> : null}
+        {error ? (
+          <p className="mt-3 text-[12px] text-red-500">{error}</p>
+        ) : null}
 
         <div className="mt-4 flex items-center justify-between gap-3">
           <a
@@ -283,20 +349,38 @@ export default function LocationSection({ debugClass = "" }: LocationSectionProp
 
         <div className="mt-9 space-y-8 text-[13px] leading-relaxed text-[#2a2a2a]">
           <div className="rounded-2xl border border-[#efefef] bg-[#fcfcfc] p-4 shadow-[0_14px_26px_rgba(0,0,0,0.05)]">
-            <GuideHeader icon={<Icon label="car"><CarIcon /></Icon>} title={GUIDE.car.title} />
+            <GuideHeader
+              icon={
+                <Icon label="car">
+                  <CarIcon />
+                </Icon>
+              }
+              title={GUIDE.car.title}
+            />
             <div className="mt-3 space-y-1 text-[#444]">
-              {GUIDE.car.lines.map((t, i) => <p key={i}>{t}</p>)}
+              {GUIDE.car.lines.map((t, i) => (
+                <p key={i}>{t}</p>
+              ))}
             </div>
           </div>
 
           <div className="rounded-2xl border border-[#efefef] bg-[#fcfcfc] p-4 shadow-[0_14px_26px_rgba(0,0,0,0.05)]">
-            <GuideHeader icon={<Icon label="bus"><BusIcon /></Icon>} title={GUIDE.bus.title} />
+            <GuideHeader
+              icon={
+                <Icon label="bus">
+                  <BusIcon />
+                </Icon>
+              }
+              title={GUIDE.bus.title}
+            />
             <div className="mt-3 space-y-4 text-[#444]">
               {GUIDE.bus.items.map((it, idx) => (
                 <div key={idx} className="space-y-1">
                   <Badge text={it.badge} />
                   <div className="mt-2 space-y-1">
-                    {it.lines.map((t, i) => <p key={i}>{t}</p>)}
+                    {it.lines.map((t, i) => (
+                      <p key={i}>{t}</p>
+                    ))}
                   </div>
                 </div>
               ))}
@@ -304,13 +388,22 @@ export default function LocationSection({ debugClass = "" }: LocationSectionProp
           </div>
 
           <div className="rounded-2xl border border-[#efefef] bg-[#fcfcfc] p-4 shadow-[0_14px_26px_rgba(0,0,0,0.05)]">
-            <GuideHeader icon={<Icon label="subway"><SubwayIcon /></Icon>} title={GUIDE.subway.title} />
+            <GuideHeader
+              icon={
+                <Icon label="subway">
+                  <SubwayIcon />
+                </Icon>
+              }
+              title={GUIDE.subway.title}
+            />
             <div className="mt-3 space-y-4 text-[#444]">
               {GUIDE.subway.items.map((it, idx) => (
                 <div key={idx} className="space-y-1">
                   <Badge text={it.badge} />
                   <div className="mt-2 space-y-1">
-                    {it.lines.map((t, i) => <p key={i}>{t}</p>)}
+                    {it.lines.map((t, i) => (
+                      <p key={i}>{t}</p>
+                    ))}
                   </div>
                 </div>
               ))}
@@ -318,9 +411,18 @@ export default function LocationSection({ debugClass = "" }: LocationSectionProp
           </div>
 
           <div className="rounded-2xl border border-[#efefef] bg-[#fcfcfc] p-4 shadow-[0_14px_26px_rgba(0,0,0,0.05)]">
-            <GuideHeader icon={<Icon label="parking"><ParkingIcon /></Icon>} title={GUIDE.parking.title} />
+            <GuideHeader
+              icon={
+                <Icon label="parking">
+                  <ParkingIcon />
+                </Icon>
+              }
+              title={GUIDE.parking.title}
+            />
             <div className="mt-3 space-y-1 text-[#444]">
-              {GUIDE.parking.lines.map((t, i) => <p key={i}>{t}</p>)}
+              {GUIDE.parking.lines.map((t, i) => (
+                <p key={i}>{t}</p>
+              ))}
             </div>
           </div>
         </div>

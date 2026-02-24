@@ -2,10 +2,11 @@ type CoupleInfoSectionProps = {
   debugClass?: string;
 };
 
-export default function CoupleInfoSection({ debugClass = "" }: CoupleInfoSectionProps) {
+export default function CoupleInfoSection({
+  debugClass = "",
+}: CoupleInfoSectionProps) {
   return (
     <section className={`px-8 py-16 text-center ${debugClass}`}>
-
       {/* 🎀 리본 */}
       <div className="flex justify-center mb-10">
         <svg
@@ -44,7 +45,6 @@ export default function CoupleInfoSection({ debugClass = "" }: CoupleInfoSection
       <div
         className="leading-9 text-[15px]"
         style={{
-          fontFamily: "serif",
           color: "#6f6a63",
           letterSpacing: "0.02em",
         }}
@@ -63,7 +63,6 @@ export default function CoupleInfoSection({ debugClass = "" }: CoupleInfoSection
       <div
         className="mt-14 leading-9 text-[15px]"
         style={{
-          fontFamily: "serif",
           color: "#6f6a63",
           letterSpacing: "0.02em",
         }}
@@ -77,7 +76,6 @@ export default function CoupleInfoSection({ debugClass = "" }: CoupleInfoSection
         <p
           className="text-lg"
           style={{
-            fontFamily: "serif",
             letterSpacing: "0.08em",
             color: "#4d4742",
           }}
