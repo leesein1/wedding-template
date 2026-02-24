@@ -1,4 +1,11 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+/*
+  HeroPhotoSection: 메인 사진 + 하트 드로잉 애니메이션
+  
+  첫 화면 로드 시:
+  - 맨 위에 있으면 스크롤 잠금 & 애니메이션 재생
+  - 아래로 스크롤된 상태에서 리로드하면 스크롤 잠금 없음
+*/
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import mainPhoto from "@/assets/img/흑백1.png";
 
 type HeroPhotoSectionProps = {
@@ -96,21 +103,110 @@ export default function HeroPhotoSection({
   const HOLD_MS = 2000;
   const FADE_OUT_MS = 1500;
 
+  // 페이지 진입 시 위치를 확인하여 스크롤 잠금이 필요한지 판단한다.
+  // 사용자가 화면을 내린 채로 새로고침/이전/다음 네비게이션을 하면
+  // 브라우저가 그 위치를 복원한다. 이때 잠금하지 않기 위해 `shouldLock`을
+  // false로 설정한다.
+  const shouldLockRef = useRef(true);
+
+  useLayoutEffect(() => {
+    // 초기 브라우저 복원 위치가 5px 이상 내려가 있으면 잠금 안 함
+    if (window.scrollY > 5) {
+      shouldLockRef.current = false;
+      return;
+    }
+
+    // 상단에 있으면 스크롤을 맨 위로 고정
+    window.scrollTo(0, 0);
+
+    const onPageShow = (e: PageTransitionEvent) => {
+      // 매번 pageshow 시에도 위치 확인
+      if (window.scrollY > 5) {
+        shouldLockRef.current = false;
+      } else {
+        shouldLockRef.current = true;
+        window.scrollTo(0, 0);
+      }
+    };
+
+    window.addEventListener("pageshow", onPageShow);
+    return () => window.removeEventListener("pageshow", onPageShow);
+  }, []);
+
+  // 스크롤 잠금/해제 로직: 잠금 시 스크롤바 너비만큼 우측 패딩을
+  // 추가하여 레이아웃이 좌우로 흔들리는 현상을 막는다.
+  const prevOverflow = useRef<string>("");
+  const prevPaddingRight = useRef<string>("");
+
+  function lockScroll() {
+    // 스크롤바 너비 계산
+    const scrollbarWidth =
+      window.innerWidth - document.documentElement.clientWidth;
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    }
+    document.body.style.overflow = "hidden";
+  }
+
+  function unlockScroll() {
+    document.body.style.overflow = prevOverflow.current;
+    document.body.style.paddingRight = prevPaddingRight.current;
+  }
+
   useEffect(() => {
-    const t1 = setTimeout(() => setPhase(1), HEART_DRAW_MS + TEXT_IN_DELAY_MS);
-    const t2 = setTimeout(
+    // 마운트 시 한 번만 원래 스타일을 저장
+    prevOverflow.current = document.body.style.overflow;
+    prevPaddingRight.current = document.body.style.paddingRight;
+
+    return () => {
+      unlockScroll();
+    };
+  }, []);
+
+  useEffect(() => {
+    // shouldLockRef.current가 false면 스크롤 제어 안 함
+    if (!shouldLockRef.current) {
+      return;
+    }
+
+    // true면 phase에 따라 스크롤 잠금/해제
+    if (phase < 3) {
+      lockScroll();
+    } else {
+      unlockScroll();
+    }
+  }, [phase]);
+
+  // 타이머를 재시작하는 함수. pageshow 이벤트나 최초 마운트 시 호출된다.
+  const timeoutIds = useRef<{ t1?: number; t2?: number; t3?: number }>({});
+
+  function startAnimation() {
+    // 상태 및 기존 타이머 초기화
+    setPhase(0);
+    if (timeoutIds.current.t1) clearTimeout(timeoutIds.current.t1);
+    if (timeoutIds.current.t2) clearTimeout(timeoutIds.current.t2);
+    if (timeoutIds.current.t3) clearTimeout(timeoutIds.current.t3);
+
+    timeoutIds.current.t1 = window.setTimeout(
+      () => setPhase(1),
+      HEART_DRAW_MS + TEXT_IN_DELAY_MS,
+    );
+    timeoutIds.current.t2 = window.setTimeout(
       () => setPhase(2),
       HEART_DRAW_MS + TEXT_IN_DELAY_MS + HOLD_MS,
     );
-    const t3 = setTimeout(
+    timeoutIds.current.t3 = window.setTimeout(
       () => setPhase(3),
       HEART_DRAW_MS + TEXT_IN_DELAY_MS + HOLD_MS + FADE_OUT_MS,
     );
+  }
 
+  useEffect(() => {
+    startAnimation();
     return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-      clearTimeout(t3);
+      if (timeoutIds.current.t1) clearTimeout(timeoutIds.current.t1);
+      if (timeoutIds.current.t2) clearTimeout(timeoutIds.current.t2);
+      if (timeoutIds.current.t3) clearTimeout(timeoutIds.current.t3);
     };
   }, []);
 

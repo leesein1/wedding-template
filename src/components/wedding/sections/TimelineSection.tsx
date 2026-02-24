@@ -1,3 +1,6 @@
+/*
+  TimelineSection: 식순/타임라인 (좌우 교차 레이아웃)
+*/
 import { useEffect, useMemo, useRef, useState } from "react";
 
 // 이미지 변경 필요
@@ -31,7 +34,11 @@ function BodyLines({ body }: { body: TimelineItem["body"] }) {
   return (
     <div className="mt-3 text-[14px] leading-7 text-[#4a4a4a] whitespace-pre-line">
       {body.map((b, i) =>
-        b.highlight ? <Highlight key={i}>{b.text}</Highlight> : <span key={i}>{b.text}</span>
+        b.highlight ? (
+          <Highlight key={i}>{b.text}</Highlight>
+        ) : (
+          <span key={i}>{b.text}</span>
+        ),
       )}
     </div>
   );
@@ -82,7 +89,10 @@ function TimelineRow({
   return (
     <div className="relative grid grid-cols-[1fr_24px_1fr] items-center gap-4 py-12">
       {/* ✅ 센티넬: 이 줄이 화면에 들어오면 “다음 아이템 오픈” 조건으로 사용 */}
-      <div ref={setSentinelRef} className="absolute left-0 right-0 top-[45%] h-[1px]" />
+      <div
+        ref={setSentinelRef}
+        className="absolute left-0 right-0 top-[45%] h-[1px]"
+      />
 
       <div className="flex justify-center">{left}</div>
 
@@ -103,7 +113,9 @@ function TimelineRow({
   );
 }
 
-export default function TimelineSection({ debugClass = "" }: TimelineSectionProps) {
+export default function TimelineSection({
+  debugClass = "",
+}: TimelineSectionProps) {
   const items: TimelineItem[] = useMemo(
     () => [
       {
@@ -149,7 +161,7 @@ export default function TimelineSection({ debugClass = "" }: TimelineSectionProp
         image: t4,
       },
     ],
-    []
+    [],
   );
 
   // ✅ 여기서 “현재까지 열린 최대 인덱스”를 관리
@@ -165,7 +177,9 @@ export default function TimelineSection({ debugClass = "" }: TimelineSectionProp
         for (const entry of entries) {
           if (!entry.isIntersecting) continue;
 
-          const idx = Number((entry.target as HTMLElement).dataset["idx"] || "-1");
+          const idx = Number(
+            (entry.target as HTMLElement).dataset["idx"] || "-1",
+          );
           if (idx < 0) continue;
 
           // ✅ 핵심: 순서대로만 증가 (1개씩)
@@ -181,7 +195,7 @@ export default function TimelineSection({ debugClass = "" }: TimelineSectionProp
       {
         threshold: 0.01,
         rootMargin: "0px 0px -20% 0px", // 살짝 내려오면 다음 트리거
-      }
+      },
     );
 
     // 관찰 등록
@@ -197,8 +211,9 @@ export default function TimelineSection({ debugClass = "" }: TimelineSectionProp
   return (
     <section className={`px-6 py-14 bg-white ${debugClass}`}>
       <div className="max-w-[420px] mx-auto">
-        <div style={{ fontFamily: "'Elsie', serif" }}
-        className="text-center text-[28px] text-[#1a1a1a]"
+        <div
+          style={{ fontFamily: "'Elsie', serif" }}
+          className="text-center text-[28px] text-[#1a1a1a]"
         >
           OUR TIMELINE
         </div>

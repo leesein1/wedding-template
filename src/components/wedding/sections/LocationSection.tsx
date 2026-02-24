@@ -1,3 +1,8 @@
+/*
+  LocationSection
+  → 예식장 위치, 교통 정보, 카카오 지도 등을 렌더링하는 섹션입니다.
+  MainWedding에서 순서에 맞게 배치되며, 독립적인 상태와 로직을 가집니다.
+*/
 import React, { useEffect, useRef, useState } from "react";
 
 declare global {

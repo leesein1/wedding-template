@@ -1,3 +1,6 @@
+/*
+  CoupleInfoSection: 신랑/신부 간단 소개 (리본 + 텍스트)
+*/
 type CoupleInfoSectionProps = {
   debugClass?: string;
 };

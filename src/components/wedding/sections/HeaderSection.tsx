@@ -1,3 +1,6 @@
+/*
+  HeaderSection: 최상단 음악 토글 버튼
+*/
 import { useRef, useState } from "react";
 
 type HeaderSectionProps = { debugClass?: string };
@@ -34,11 +37,7 @@ export default function HeaderSection({ debugClass = "" }: HeaderSectionProps) {
             <span className="bar delay-2 w-[3px]" />
           </div>
         ) : (
-          <svg
-            viewBox="0 0 24 24"
-            className="w-8 h-8"
-            fill="white"
-          >
+          <svg viewBox="0 0 24 24" className="w-8 h-8" fill="white">
             <path d="M8 5v14l11-7z" />
           </svg>
         )}

@@ -1,3 +1,6 @@
+/*
+  ShareSection: SNS 공유 버튼 또는 링크 복사
+*/
 type ShareSectionProps = {
   debugClass?: string;
 };

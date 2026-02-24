@@ -1,10 +1,15 @@
+/*
+  DateTitleSection: 결혼 날짜 + 타이틀 (배경색 변경 애니메이션)
+*/
 import { useEffect, useRef, useState } from "react";
 
 type DateTitleSectionProps = {
   debugClass?: string;
 };
 
-export default function DateTitleSection({ debugClass = "" }: DateTitleSectionProps) {
+export default function DateTitleSection({
+  debugClass = "",
+}: DateTitleSectionProps) {
   const ref = useRef<HTMLElement | null>(null);
   const [active, setActive] = useState(false);
 
@@ -20,7 +25,7 @@ export default function DateTitleSection({ debugClass = "" }: DateTitleSectionPr
       {
         threshold: 0.25, // 조금 더 일찍 준비시키고
         rootMargin: "0px 0px -10% 0px", // 살짝 아래에서부터 스무스하게
-      }
+      },
     );
 
     io.observe(el);

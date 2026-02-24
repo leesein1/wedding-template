@@ -1,3 +1,6 @@
+/*
+  AccountSection: 축의금 계좌 정보 + 복사 기능
+*/
 import { useMemo, useState } from "react";
 
 type AccountSectionProps = {
@@ -19,8 +22,19 @@ function cx(...classes: Array<string | false | undefined | null>) {
 
 function CopyIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M9 9h10v12H9V9Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M9 9h10v12H9V9Z"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinejoin="round"
+      />
       <path
         d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"
         stroke="currentColor"
@@ -95,7 +109,9 @@ function AccountCard({ item }: { item: AccountItem }) {
     <div className="rounded-2xl bg-white shadow-[0_14px_26px_rgba(0,0,0,0.07)] border border-[#eeeeee]">
       <div className="flex items-center justify-between px-5 pt-4">
         <div className="text-[13px] text-[#2a2a2a]">{item.roleLabel}</div>
-        <div className="text-[13px] font-semibold text-[#2a2a2a]">{item.ownerName}</div>
+        <div className="text-[13px] font-semibold text-[#2a2a2a]">
+          {item.ownerName}
+        </div>
       </div>
 
       <div className="px-5 pb-4 pt-3">
@@ -153,7 +169,12 @@ function Accordion({
       </button>
 
       {/* ✅ open이면 펼치고, 아니면 닫힘 / 서로 독립 */}
-      <div className={cx("grid transition-[grid-template-rows] duration-250 ease-out", open ? "grid-rows-[1fr]" : "grid-rows-[0fr]")}>
+      <div
+        className={cx(
+          "grid transition-[grid-template-rows] duration-250 ease-out",
+          open ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
+        )}
+      >
         <div className="min-h-0 overflow-hidden">
           {/* ✅ 펼쳐졌을 때 내부 배경: 그레이 톤 */}
           <div className="bg-[#e3e3e3] px-4 pb-5 pt-4">{children}</div>
@@ -163,19 +184,63 @@ function Accordion({
   );
 }
 
-export default function AccountSection({ debugClass = "" }: AccountSectionProps) {
+export default function AccountSection({
+  debugClass = "",
+}: AccountSectionProps) {
   // ✅ 여기 데이터만 너 실제 값으로 교체
   const data: AccountItem[] = useMemo(
     () => [
-      { side: "groom", roleLabel: "신랑", ownerName: "이민호", bankName: "토그은행", accountNo: "123-456-789012", pay: "kakaopay" },
-      { side: "groom", roleLabel: "신랑 아버지", ownerName: "이정빈", bankName: "토그은행", accountNo: "123-456-789012", pay: "kakaopay" },
-      { side: "groom", roleLabel: "신랑 어머니", ownerName: "홍지은", bankName: "토그은행", accountNo: "123-456-789012", pay: "kakaopay" },
+      {
+        side: "groom",
+        roleLabel: "신랑",
+        ownerName: "이민호",
+        bankName: "토그은행",
+        accountNo: "123-456-789012",
+        pay: "kakaopay",
+      },
+      {
+        side: "groom",
+        roleLabel: "신랑 아버지",
+        ownerName: "이정빈",
+        bankName: "토그은행",
+        accountNo: "123-456-789012",
+        pay: "kakaopay",
+      },
+      {
+        side: "groom",
+        roleLabel: "신랑 어머니",
+        ownerName: "홍지은",
+        bankName: "토그은행",
+        accountNo: "123-456-789012",
+        pay: "kakaopay",
+      },
 
-      { side: "bride", roleLabel: "신부", ownerName: "김화진", bankName: "토그은행", accountNo: "987-654-321000", pay: "kakaopay" },
-      { side: "bride", roleLabel: "신부 아버지", ownerName: "김OO", bankName: "토그은행", accountNo: "987-654-321000", pay: "kakaopay" },
-      { side: "bride", roleLabel: "신부 어머니", ownerName: "박OO", bankName: "토그은행", accountNo: "987-654-321000", pay: "kakaopay" },
+      {
+        side: "bride",
+        roleLabel: "신부",
+        ownerName: "김화진",
+        bankName: "토그은행",
+        accountNo: "987-654-321000",
+        pay: "kakaopay",
+      },
+      {
+        side: "bride",
+        roleLabel: "신부 아버지",
+        ownerName: "김OO",
+        bankName: "토그은행",
+        accountNo: "987-654-321000",
+        pay: "kakaopay",
+      },
+      {
+        side: "bride",
+        roleLabel: "신부 어머니",
+        ownerName: "박OO",
+        bankName: "토그은행",
+        accountNo: "987-654-321000",
+        pay: "kakaopay",
+      },
     ],
-    []
+    [],
   );
 
   const groomList = data.filter((d) => d.side === "groom");
@@ -189,7 +254,10 @@ export default function AccountSection({ debugClass = "" }: AccountSectionProps)
     <section className={cx("px-6 py-10 bg-[#ffffff]", debugClass)}>
       <div className="max-w-[420px] mx-auto">
         <div className="text-center">
-          <div style={{ fontFamily: "'Elsie', serif" }} className="text-[26px] tracking-[0em] text-[#1a1a1a]">
+          <div
+            style={{ fontFamily: "'Elsie', serif" }}
+            className="text-[26px] tracking-[0em] text-[#1a1a1a]"
+          >
             마음 전하실 곳
           </div>
           <p className="mt-4 text-[13px] text-[#8b8b8b]">
@@ -198,7 +266,11 @@ export default function AccountSection({ debugClass = "" }: AccountSectionProps)
         </div>
 
         <div className="mt-7 space-y-4">
-          <Accordion title="신랑측에게" open={groomOpen} onToggle={() => setGroomOpen((v) => !v)}>
+          <Accordion
+            title="신랑측에게"
+            open={groomOpen}
+            onToggle={() => setGroomOpen((v) => !v)}
+          >
             <div className="space-y-3">
               {groomList.map((item, idx) => (
                 <AccountCard key={`g-${idx}-${item.roleLabel}`} item={item} />
@@ -206,7 +278,11 @@ export default function AccountSection({ debugClass = "" }: AccountSectionProps)
             </div>
           </Accordion>
 
-          <Accordion title="신부측에게" open={brideOpen} onToggle={() => setBrideOpen((v) => !v)}>
+          <Accordion
+            title="신부측에게"
+            open={brideOpen}
+            onToggle={() => setBrideOpen((v) => !v)}
+          >
             <div className="space-y-3">
               {brideList.map((item, idx) => (
                 <AccountCard key={`b-${idx}-${item.roleLabel}`} item={item} />

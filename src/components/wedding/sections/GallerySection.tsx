@@ -1,3 +1,6 @@
+/*
+  GallerySection: 사진 슬라이더 (드래그/터치 제스처 지원)
+*/
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
 type GallerySectionProps = {
@@ -12,7 +15,7 @@ import g5 from "@/assets/img/야외컬러1.png";
 
 function clampIndex(i: number, len: number) {
   if (len <= 0) return 0;
-  return (i % len + len) % len;
+  return ((i % len) + len) % len;
 }
 
 function useInterval(callback: () => void, delay: number | null) {
@@ -59,12 +62,24 @@ function Dots({
 function PlayIcon({ isPaused }: { isPaused: boolean }) {
   return isPaused ? (
     // ▶ 재생
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="#444" aria-hidden="true">
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="#444"
+      aria-hidden="true"
+    >
       <path d="M8 5v14l11-7-11-7Z" />
     </svg>
   ) : (
     // ⏸ 일시정지
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="#444" aria-hidden="true">
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="#444"
+      aria-hidden="true"
+    >
       <path d="M6 5h4v14H6V5Zm8 0h4v14h-4V5Z" />
     </svg>
   );
@@ -224,8 +239,14 @@ function PeekSlider({
 
   return (
     <div ref={wrapRef} className="relative overflow-hidden select-none">
-      <ArrowBtn dir="left" onClick={() => onChange(clampIndex(index - 1, len))} />
-      <ArrowBtn dir="right" onClick={() => onChange(clampIndex(index + 1, len))} />
+      <ArrowBtn
+        dir="left"
+        onClick={() => onChange(clampIndex(index - 1, len))}
+      />
+      <ArrowBtn
+        dir="right"
+        onClick={() => onChange(clampIndex(index + 1, len))}
+      />
 
       <div
         className="flex cursor-grab active:cursor-grabbing"
@@ -236,12 +257,18 @@ function PeekSlider({
         style={{
           gap: `${gapPx}px`,
           transform: `translateX(${translateX}px)`,
-          transition: noAnim ? "none" : "transform 1200ms cubic-bezier(0.22, 1, 0.36, 1)", /* 슬라이드 속도 조절 */
+          transition: noAnim
+            ? "none"
+            : "transform 1200ms cubic-bezier(0.22, 1, 0.36, 1)" /* 슬라이드 속도 조절 */,
           willChange: "transform",
         }}
       >
         {images.map((src, i) => (
-          <div key={src + i} className="flex-shrink-0" style={{ width: `${slideW}px` }}>
+          <div
+            key={src + i}
+            className="flex-shrink-0"
+            style={{ width: `${slideW}px` }}
+          >
             <div
               className="rounded-2xl overflow-hidden shadow-sm border border-[#f0f0f0] bg-white"
               style={{ height: `${heightPx}px` }}
@@ -260,7 +287,9 @@ function PeekSlider({
   );
 }
 
-export default function GallerySection({ debugClass = "" }: GallerySectionProps) {
+export default function GallerySection({
+  debugClass = "",
+}: GallerySectionProps) {
   const images = useMemo(() => [g1, g2, g3, g4, g5], []);
   const [index, setIndex] = useState(0);
 
@@ -275,7 +304,7 @@ export default function GallerySection({ debugClass = "" }: GallerySectionProps)
       if (len <= 1) return;
       setIndex((cur) => clampIndex(cur + 1, len));
     },
-    !paused ? 5000 : null
+    !paused ? 5000 : null,
   );
 
   return (

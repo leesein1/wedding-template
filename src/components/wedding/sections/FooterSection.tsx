@@ -1,3 +1,6 @@
+/*
+  FooterSection: 저작권 정보 등 페이지 하단 포함
+*/
 type FooterSectionProps = {
   debugClass?: string;
 };

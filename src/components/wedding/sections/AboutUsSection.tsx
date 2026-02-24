@@ -1,4 +1,7 @@
-import groomImg from "@/assets/img/야외컬러1.png"; 
+/*
+  AboutUsSection: 신랑/신부 상세 프로필 (사진, 가족 정보, 서약)
+*/
+import groomImg from "@/assets/img/야외컬러1.png";
 import brideImg from "@/assets/img/야외컬러2.png";
 
 type BrideGroomSectionProps = {
@@ -39,7 +42,9 @@ function PhoneIcon() {
   );
 }
 
-export default function AboutUsSection({ debugClass = "" }: BrideGroomSectionProps) {
+export default function AboutUsSection({
+  debugClass = "",
+}: BrideGroomSectionProps) {
   const groom: PersonCard = {
     roleLabel: "신랑",
     roleColorClass: "text-sky-400",
@@ -91,7 +96,10 @@ export default function AboutUsSection({ debugClass = "" }: BrideGroomSectionPro
           {/* 상단: 사진 2장 */}
           <div className="grid grid-cols-2 gap-4 p-4">
             {cards.map((p) => (
-              <div key={p.roleLabel} className="rounded-xl overflow-hidden bg-[#f6f6f6]">
+              <div
+                key={p.roleLabel}
+                className="rounded-xl overflow-hidden bg-[#f6f6f6]"
+              >
                 <img
                   src={p.imageSrc}
                   alt={`${p.roleLabel} ${p.name}`}
@@ -108,10 +116,14 @@ export default function AboutUsSection({ debugClass = "" }: BrideGroomSectionPro
               <div key={p.roleLabel} className="text-center px-2">
                 {/* 역할/이름/전화 */}
                 <div className="mt-1 flex items-center justify-center gap-2">
-                  <span className={`${p.roleColorClass} text-[13px] font-medium`}>
+                  <span
+                    className={`${p.roleColorClass} text-[13px] font-medium`}
+                  >
                     {p.roleLabel}
                   </span>
-                  <span className="text-[15px] text-[#1a1a1a] font-medium">{p.name}</span>
+                  <span className="text-[15px] text-[#1a1a1a] font-medium">
+                    {p.name}
+                  </span>
 
                   {p.tel ? (
                     <a
@@ -129,7 +141,10 @@ export default function AboutUsSection({ debugClass = "" }: BrideGroomSectionPro
                   <div>{p.birth}</div>
                   <div>{p.region}</div>
                   <div>
-                    {p.job} {p.jobEmoji ? <span className="ml-1">{p.jobEmoji}</span> : null}
+                    {p.job}{" "}
+                    {p.jobEmoji ? (
+                      <span className="ml-1">{p.jobEmoji}</span>
+                    ) : null}
                   </div>
                 </div>
 

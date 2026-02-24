@@ -1,10 +1,15 @@
+/*
+  WelcomeMessageSection: 환영 메시지 이미지
+*/
 import welcomeImage from "@/assets/img/컬러2.png";
 
 type WelcomeMessageSectionProps = {
   debugClass?: string;
 };
 
-export default function WelcomeMessageSection({ debugClass = "" }: WelcomeMessageSectionProps) {
+export default function WelcomeMessageSection({
+  debugClass = "",
+}: WelcomeMessageSectionProps) {
   return (
     /// 여백 주고싶으면 px-6 py-10을 클래스에 추가하면 됨
     <section className={`text-center ${debugClass}`}>

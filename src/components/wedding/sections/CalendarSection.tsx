@@ -1,3 +1,6 @@
+/*
+  CalendarSection: 카운트다운 + 달력 표시
+*/
 import { useEffect, useMemo, useState } from "react";
 
 type CalendarSectionProps = {
@@ -35,7 +38,9 @@ function buildMonthGrid(year: number, month1to12: number) {
   return cells;
 }
 
-export default function CalendarSection({ debugClass = "" }: CalendarSectionProps) {
+export default function CalendarSection({
+  debugClass = "",
+}: CalendarSectionProps) {
   // 결혼식 날짜/시간 (KST 고정)
   const target = useMemo(() => new Date("2027-01-16T11:00:00+09:00"), []);
 
@@ -121,9 +126,7 @@ export default function CalendarSection({ debugClass = "" }: CalendarSectionProp
           <div className="mt-5 text-[14px] text-[#3a3a3a] mb-2">
             {koDateLine}시
           </div>
-          <div className="mt-1 text-[15px] text-[#9a9a9a]">
-            {enDateLine}
-          </div>
+          <div className="mt-1 text-[15px] text-[#9a9a9a]">{enDateLine}</div>
 
           <div className="mt-8 h-px bg-[#e7e7e7]" />
         </div>
@@ -204,7 +207,8 @@ export default function CalendarSection({ debugClass = "" }: CalendarSectionProp
             <span>오늘이 결혼식 당일입니다 🤍</span>
           ) : (
             <span>
-              세인❤화진 결혼식이 <b className="font-semibold">{cd.days}</b>일 남았습니다
+              세인❤화진 결혼식이 <b className="font-semibold">{cd.days}</b>일
+              남았습니다
             </span>
           )}
         </div>
