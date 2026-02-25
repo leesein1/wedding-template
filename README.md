@@ -1,18 +1,25 @@
-# 모던 웨딩 초대장 템플릿 | Modern Wedding Invitation Template
+# 웨딩 초대장 템플릿 | Modern Wedding Invitation Template
 
 > React + TypeScript + Vite로 제작된 스타일리시한 모바일 웨딩 초대장 웹 템플릿
-
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-![React](https://img.shields.io/badge/React-19-blue)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue)
-![Vite](https://img.shields.io/badge/Vite-6.0-blueviolet)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-3.4-0ea5e9)
+> 사실 이걸 만든 계기는 꽤나 현실적이에요. 모바일 청첩장 하나에
+> 1~2만원씩 주고 잠깐 쓰고 마는 게 은근히 아깝더라고요. 그래서
+> "내가 만들면 어떨까?" 싶은 생각이 들었고, 그냥 HTML/CSS/JS로
+> 뚝딱하려다가 마침 React, TypeScript 공부 중이던 터라
+> 겸사겸사 이쪽으로 만들어보자고 방향을 바꿨습니다. 복잡한
+> 기능들은 AI 도움도 조금 받고(?) 빠르게 구현했죠. 이런 식으로
+> 내 손으로 만들어도 충분히 쓸만하다는 걸 보여주고 싶었습니다.
+> [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+> ![React](https://img.shields.io/badge/React-19-blue)
+> ![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue)
+> ![Vite](https://img.shields.io/badge/Vite-6.0-blueviolet)
+> ![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-3.4-0ea5e9)
 
 ---
 
 ## 📸 데모
 
-[라이브 데모](https://your-demo-url.com) (배포 후 수정)
+로컬 개발 서버(`npm run dev`)에서 확인할 수 있으며, 공개 배포가 완료되면
+여기에 라이브 데모 링크를 추가할 예정입니다.
 
 ---
 
@@ -25,15 +32,15 @@
 - **하트 드로잉 애니메이션**: 첫 화면에서 SVG 하트가 그려지는 시각적 임팩트
 - **반응형 디자인**: 모든 모바일 기기에 최적화
 
-### ⚡ 기능
+### ⚡ 기능 (현재 구현된 것)
 
 - 🎞️ **이미지 갤러리**: 드래그/터치 제스처 지원 슬라이더
-- 🗺️ **웨딩홀 위치**: 카카오 지도 API 통합
-- 📅 **카운트다운**: 결혼식 날짜까지의 실시간 카운트다운
-- 💰 **축의금 계좌**: 복사 버튼으로 쉬운 계좌 전달
-- 🎬 **타임라인**: 식순을 시각적으로 표현
-- 🎵 **백그라운드 뮤직**: 헤더의 토글 버튼으로 제어
-- 📱 **스크롤 인식**: 첫 화면 로드 시 스크롤 방지 및 자동 초기화
+- 🗺️ **웨딩홀 위치**: 카카오 지도 API 통합 (환경변수 설정 필요)
+- 📅 **카운트다운**: 지정한 결혼식 날짜까지의 타이머
+- 💰 **축의금 계좌**: 복사 버튼으로 계좌번호 복사
+- 🎬 **타임라인**: 식순을 시각적으로 표현하는 섹션
+- 🎵 **백그라운드 음악**: 헤더에서 재생/일시정지 제어
+- 📱 **스크롤 잠금/초기화**: 첫 화면 로드 시 스크롤 방지 및 위치 고정
 
 ### 🛠️ 기술
 
