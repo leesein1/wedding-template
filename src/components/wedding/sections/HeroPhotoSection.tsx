@@ -119,7 +119,7 @@ export default function HeroPhotoSection({
     // 상단에 있으면 스크롤을 맨 위로 고정
     window.scrollTo(0, 0);
 
-    const onPageShow = (e: PageTransitionEvent) => {
+    const onPageShow = (_e: PageTransitionEvent) => {
       // 매번 pageshow 시에도 위치 확인
       if (window.scrollY > 5) {
         shouldLockRef.current = false;

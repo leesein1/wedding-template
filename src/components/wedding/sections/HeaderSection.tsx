@@ -23,7 +23,7 @@ export default function HeaderSection({ debugClass = "" }: HeaderSectionProps) {
   };
 
   return (
-    <>
+    <div className={debugClass}>
       <audio ref={audioRef} src="/music/wedding.mp3" loop />
 
       <div
@@ -42,6 +42,6 @@ export default function HeaderSection({ debugClass = "" }: HeaderSectionProps) {
           </svg>
         )}
       </div>
-    </>
+    </div>
   );
 }
