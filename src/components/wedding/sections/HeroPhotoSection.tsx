@@ -97,11 +97,17 @@ export default function HeroPhotoSection({
   debugClass = "",
 }: HeroPhotoSectionProps) {
   const [phase, setPhase] = useState<0 | 1 | 2 | 3>(0);
+  const [lockedViewportHeight, setLockedViewportHeight] = useState<number | null>(
+    null,
+  );
 
   const HEART_DRAW_MS = 1500;
   const TEXT_IN_DELAY_MS = 300;
   const HOLD_MS = 2000;
   const FADE_OUT_MS = 1500;
+  const ENABLE_SCRIPT_TITLE = false;
+  const SHOW_HEART_OUTLINE = true;
+  const SCRIPT_REVEAL_MS = 1800;
 
   // 페이지 진입 시 위치를 확인하여 스크롤 잠금이 필요한지 판단한다.
   // 사용자가 화면을 내린 채로 새로고침/이전/다음 네비게이션을 하면
@@ -110,6 +116,7 @@ export default function HeroPhotoSection({
   const shouldLockRef = useRef(true);
 
   useLayoutEffect(() => {
+    setLockedViewportHeight(window.innerHeight);
     // 초기 브라우저 복원 위치가 5px 이상 내려가 있으면 잠금 안 함
     if (window.scrollY > 5) {
       shouldLockRef.current = false;
@@ -119,7 +126,7 @@ export default function HeroPhotoSection({
     // 상단에 있으면 스크롤을 맨 위로 고정
     window.scrollTo(0, 0);
 
-    const onPageShow = (e: PageTransitionEvent) => {
+    const onPageShow = () => {
       // 매번 pageshow 시에도 위치 확인
       if (window.scrollY > 5) {
         shouldLockRef.current = false;
@@ -135,6 +142,21 @@ export default function HeroPhotoSection({
 
   // 스크롤 잠금/해제 로직: 잠금 시 스크롤바 너비만큼 우측 패딩을
   // 추가하여 레이아웃이 좌우로 흔들리는 현상을 막는다.
+  useEffect(() => {
+    const updateViewportHeight = () => {
+      if (phase < 3) return;
+      setLockedViewportHeight(window.innerHeight);
+    };
+
+    window.addEventListener("resize", updateViewportHeight);
+    window.addEventListener("orientationchange", updateViewportHeight);
+
+    return () => {
+      window.removeEventListener("resize", updateViewportHeight);
+      window.removeEventListener("orientationchange", updateViewportHeight);
+    };
+  }, [phase]);
+
   const prevOverflow = useRef<string>("");
   const prevPaddingRight = useRef<string>("");
 
@@ -218,8 +240,14 @@ export default function HeroPhotoSection({
 
   return (
     <section
-      className={`relative w-full h-[100dvh] overflow-hidden ${debugClass}`}
-      style={{ fontFamily: systemFont }}
+      className={`relative w-full overflow-hidden ${debugClass}`}
+      style={{
+        fontFamily: systemFont,
+        height:
+          phase < 3 && lockedViewportHeight
+            ? `${lockedViewportHeight}px`
+            : "100svh",
+      }}
     >
       {/* 배경 */}
       <img
@@ -255,8 +283,99 @@ export default function HeroPhotoSection({
             opacity: phase >= 2 ? 0 : 1,
           }}
         >
-          <div className="w-full max-w-[380px]">
-            <svg viewBox="0 0 400 360" className="w-full h-auto">
+          <div className="relative w-full max-w-[380px]">
+            {ENABLE_SCRIPT_TITLE ? (
+              <div
+                className="pointer-events-none absolute inset-0 z-10"
+                style={{
+                  opacity: phase >= 1 ? 1 : 0,
+                  transform: phase >= 1 ? "translateY(0px)" : "translateY(8px)",
+                  transition: "opacity 700ms ease-out, transform 700ms ease-out",
+                }}
+              >
+                <svg
+                  viewBox="0 0 380 360"
+                  className="absolute inset-0 h-full w-full overflow-visible"
+                  style={{
+                    filter: phase >= 1 ? "blur(0px)" : "blur(1.2px)",
+                    clipPath:
+                      phase >= 1 ? "inset(0 0 0 0)" : "inset(0 100% 0 0)",
+                    transition: `clip-path ${SCRIPT_REVEAL_MS}ms cubic-bezier(0.22, 1, 0.36, 1), filter 900ms ease-out`,
+                  }}
+                >
+                  <path
+                    d="M18 114 C40 106, 60 98, 82 92"
+                    fill="none"
+                    stroke="rgba(255,255,255,0.94)"
+                    strokeWidth="2.1"
+                    strokeLinecap="round"
+                    style={{
+                      strokeDasharray: 90,
+                      strokeDashoffset: phase >= 1 ? 0 : 90,
+                      transition: `stroke-dashoffset ${SCRIPT_REVEAL_MS}ms cubic-bezier(0.22, 1, 0.36, 1)`,
+                    }}
+                  />
+                  <text
+                    x="95"
+                    y="122"
+                    fill="rgba(255,255,255,0.97)"
+                    style={{
+                      fontFamily: "'RememberNight', 'WeddingSignature', cursive",
+                      fontSize: "56px",
+                      letterSpacing: "0.01em",
+                      transform: "rotate(-4deg)",
+                      transformOrigin: "95px 122px",
+                    }}
+                  >
+                    We&apos;re getting
+                  </text>
+                  <text
+                    x="86"
+                    y="228"
+                    fill="rgba(255,255,255,0.99)"
+                    style={{
+                      fontFamily: "'RememberNight', 'WeddingSignature', cursive",
+                      fontSize: "108px",
+                      letterSpacing: "-0.01em",
+                      transform: "rotate(-4deg)",
+                      transformOrigin: "86px 228px",
+                    }}
+                  >
+                    Married!
+                  </text>
+                  <path
+                    d="M62 188 C108 170, 160 172, 214 202"
+                    fill="none"
+                    stroke="rgba(255,255,255,0.84)"
+                    strokeWidth="1.9"
+                    strokeLinecap="round"
+                    style={{
+                      strokeDasharray: 180,
+                      strokeDashoffset: phase >= 1 ? 0 : 180,
+                      transition: `stroke-dashoffset ${SCRIPT_REVEAL_MS + 120}ms cubic-bezier(0.22, 1, 0.36, 1)`,
+                    }}
+                  />
+                  <path
+                    d="M34 304 C116 290, 228 292, 346 306"
+                    fill="none"
+                    stroke="rgba(255,255,255,0.95)"
+                    strokeWidth="2.3"
+                    strokeLinecap="round"
+                    style={{
+                      strokeDasharray: 340,
+                      strokeDashoffset: phase >= 1 ? 0 : 340,
+                      transition: `stroke-dashoffset ${SCRIPT_REVEAL_MS + 260}ms cubic-bezier(0.22, 1, 0.36, 1)`,
+                    }}
+                  />
+                </svg>
+              </div>
+            ) : null}
+
+            <svg
+              viewBox="0 0 400 360"
+              className="w-full h-auto"
+              style={{ display: SHOW_HEART_OUTLINE ? "block" : "none" }}
+            >
               <path
                 d="M200 310 C120 250,60 190,60 130 C60 75,95 50,130 50 C160 50,185 65,200 85 C215 65,240 50,270 50 C305 50,340 75,340 130 C340 190,280 250,200 310 Z"
                 fill="none"

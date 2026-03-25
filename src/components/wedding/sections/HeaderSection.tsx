@@ -5,7 +5,7 @@ import { useRef, useState } from "react";
 
 type HeaderSectionProps = { debugClass?: string };
 
-export default function HeaderSection({ debugClass = "" }: HeaderSectionProps) {
+export default function HeaderSection(_: HeaderSectionProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(true);
 
