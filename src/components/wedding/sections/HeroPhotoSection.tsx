@@ -97,9 +97,9 @@ export default function HeroPhotoSection({
   debugClass = "",
 }: HeroPhotoSectionProps) {
   const [phase, setPhase] = useState<0 | 1 | 2 | 3>(0);
-  const [lockedViewportHeight, setLockedViewportHeight] = useState<number | null>(
-    null,
-  );
+  const [lockedViewportHeight, setLockedViewportHeight] = useState<
+    number | null
+  >(null);
 
   const HEART_DRAW_MS = 1500;
   const TEXT_IN_DELAY_MS = 300;
@@ -126,7 +126,7 @@ export default function HeroPhotoSection({
     // 상단에 있으면 스크롤을 맨 위로 고정
     window.scrollTo(0, 0);
 
-    const onPageShow = () => {
+    const onPageShow = (_e: PageTransitionEvent) => {
       // 매번 pageshow 시에도 위치 확인
       if (window.scrollY > 5) {
         shouldLockRef.current = false;
@@ -290,7 +290,8 @@ export default function HeroPhotoSection({
                 style={{
                   opacity: phase >= 1 ? 1 : 0,
                   transform: phase >= 1 ? "translateY(0px)" : "translateY(8px)",
-                  transition: "opacity 700ms ease-out, transform 700ms ease-out",
+                  transition:
+                    "opacity 700ms ease-out, transform 700ms ease-out",
                 }}
               >
                 <svg
@@ -320,7 +321,8 @@ export default function HeroPhotoSection({
                     y="122"
                     fill="rgba(255,255,255,0.97)"
                     style={{
-                      fontFamily: "'RememberNight', 'WeddingSignature', cursive",
+                      fontFamily:
+                        "'RememberNight', 'WeddingSignature', cursive",
                       fontSize: "56px",
                       letterSpacing: "0.01em",
                       transform: "rotate(-4deg)",
@@ -334,7 +336,8 @@ export default function HeroPhotoSection({
                     y="228"
                     fill="rgba(255,255,255,0.99)"
                     style={{
-                      fontFamily: "'RememberNight', 'WeddingSignature', cursive",
+                      fontFamily:
+                        "'RememberNight', 'WeddingSignature', cursive",
                       fontSize: "108px",
                       letterSpacing: "-0.01em",
                       transform: "rotate(-4deg)",
