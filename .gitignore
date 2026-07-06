@@ -71,6 +71,3 @@ Thumbs.db
 .tmp/
 temp/
 *.pid
-
-# Assets: ignore all wedding images
-src/assets/img/*
