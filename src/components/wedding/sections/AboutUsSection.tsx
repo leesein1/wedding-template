@@ -1,8 +1,8 @@
 /*
   AboutUsSection: 신랑/신부 상세 프로필 (사진, 가족 정보, 서약)
 */
-import groomImg from "@/assets/img/야외컬러1.png";
-import brideImg from "@/assets/img/야외컬러2.png";
+import groomImg from "@/assets/img/어린_이세인.png";
+import brideImg from "@/assets/img/어린_유화진.png";
 
 type BrideGroomSectionProps = {
   debugClass?: string;
@@ -53,7 +53,7 @@ export default function AboutUsSection({
     imageSrc: groomImg,
 
     birth: "93년 8월 3일",
-    region: "인천 부평",
+    region: "인천",
     job: "IT 개발자",
     jobEmoji: "💻",
 
@@ -69,7 +69,7 @@ export default function AboutUsSection({
     imageSrc: brideImg,
 
     birth: "99년 8월 12일",
-    region: "인천 도원",
+    region: "인천",
     job: "웨딩 마케터",
     jobEmoji: "🎨",
 

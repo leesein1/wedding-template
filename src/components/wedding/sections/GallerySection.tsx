@@ -7,11 +7,11 @@ type GallerySectionProps = {
   debugClass?: string;
 };
 
-import g1 from "@/assets/img/컬러1.png";
-import g2 from "@/assets/img/컬러2.png";
-import g3 from "@/assets/img/흑백1.png";
-import g4 from "@/assets/img/야외컬러2.png";
-import g5 from "@/assets/img/야외컬러1.png";
+import g1 from "@/assets/img/비비엔다2.webp";
+import g2 from "@/assets/img/이모님1.jpg";
+import g3 from "@/assets/img/이모님2.jpg";
+import g4 from "@/assets/img/이모님3.jpg";
+import g5 from "@/assets/img/이모님4.jpg";
 
 function clampIndex(i: number, len: number) {
   if (len <= 0) return 0;

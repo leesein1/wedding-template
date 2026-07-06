@@ -7,7 +7,8 @@
 */
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import weGotMarriedSvg from "@/assets/we-got-married.svg?raw";
-import mainPhoto from "@/assets/img/흑백1.png";
+import weddingTitleVideo from "@/assets/our-wedding-title.mp4";
+import mainPhoto from "@/assets/img/비비엔다2.webp";
 
 type HeroPhotoSectionProps = {
   debugClass?: string;
@@ -26,7 +27,7 @@ type Flake = {
 const introWeddingSvg = weGotMarriedSvg
   // The source artwork has a large empty portrait canvas around the lettering.
   // Crop to the actual paths so the mark, rather than its whitespace, fills the box.
-  .replace(/viewBox="[^"]*"/, 'viewBox="65 285 405 235"')
+  .replace(/viewBox="[^"]*"/, 'viewBox="105 335 360 165"')
   .replace(/preserveAspectRatio="[^"]*"/, 'preserveAspectRatio="xMidYMid meet"')
   .replace(/<path\b/g, '<path pathLength="1"');
 
@@ -106,7 +107,7 @@ function SnowOverlay({ active }: { active: boolean }) {
   );
 }
 
-function IntroWeddingMark({ drawMs }: { drawMs: number }) {
+export function IntroWeddingMark({ drawMs }: { drawMs: number }) {
   const fillDelayMs = Math.max(drawMs - 500, 0);
 
   return (
@@ -209,14 +210,16 @@ export default function HeroPhotoSection({
   debugClass = "",
 }: HeroPhotoSectionProps) {
   const [phase, setPhase] = useState<0 | 1 | 2 | 3>(0);
+  const [mainPhotoReady, setMainPhotoReady] = useState(false);
+  const [titleVideoVisible, setTitleVideoVisible] = useState(true);
   const [lockedViewportHeight, setLockedViewportHeight] = useState<
     number | null
   >(null);
 
-  const INTRO_SHOW_MS = 1800;
-  const FADE_OUT_MS = 1500;
+  const INTRO_SHOW_MS = 2200;
+  const FADE_OUT_MS = 700;
   const ENABLE_SCRIPT_TITLE = false;
-  const SCRIPT_REVEAL_MS = 1800;
+  const SCRIPT_REVEAL_MS = 2000;
 
   // 페이지 진입 시 위치를 확인하여 스크롤 잠금이 필요한지 판단한다.
   // 사용자가 화면을 내린 채로 새로고침/이전/다음 네비게이션을 하면
@@ -308,34 +311,23 @@ export default function HeroPhotoSection({
     }
   }, [phase]);
 
-  // 타이머를 재시작하는 함수. pageshow 이벤트나 최초 마운트 시 호출된다.
-  const timeoutIds = useRef<{ t1?: number; t2?: number; t3?: number }>({});
+  // Start the intro clock only after the hero photo is available to paint.
+  useEffect(() => {
+    if (!mainPhotoReady) return;
 
-  function startAnimation() {
-    // 상태 및 기존 타이머 초기화
-    setPhase(0);
-    if (timeoutIds.current.t1) clearTimeout(timeoutIds.current.t1);
-    if (timeoutIds.current.t2) clearTimeout(timeoutIds.current.t2);
-    if (timeoutIds.current.t3) clearTimeout(timeoutIds.current.t3);
-
-    timeoutIds.current.t2 = window.setTimeout(
-      () => setPhase(2),
+    // Fallback for browsers that fail to emit the video's `ended` event.
+    const finishTimer = window.setTimeout(
+      () => {
+        setTitleVideoVisible(false);
+        setPhase(3);
+      },
       INTRO_SHOW_MS,
     );
-    timeoutIds.current.t3 = window.setTimeout(
-      () => setPhase(3),
-      INTRO_SHOW_MS + FADE_OUT_MS,
-    );
-  }
 
-  useEffect(() => {
-    startAnimation();
     return () => {
-      if (timeoutIds.current.t1) clearTimeout(timeoutIds.current.t1);
-      if (timeoutIds.current.t2) clearTimeout(timeoutIds.current.t2);
-      if (timeoutIds.current.t3) clearTimeout(timeoutIds.current.t3);
+      window.clearTimeout(finishTimer);
     };
-  }, []);
+  }, [mainPhotoReady]);
 
   const introVisible = phase < 3;
   const snowActive = phase >= 3;
@@ -358,12 +350,14 @@ export default function HeroPhotoSection({
       <img
         src={mainPhoto}
         alt="웨딩 메인 사진"
-        className="absolute inset-0 w-full h-full object-cover transition-all ease-out"
+        fetchPriority="high"
+        decoding="async"
+        onLoad={() => setMainPhotoReady(true)}
+        className="absolute inset-0 w-full h-full object-cover object-center transition-all ease-out"
         style={{
-          transitionDuration: "1600ms",
-          transform: introVisible ? "scale(1.04)" : "scale(1)",
+          transitionDuration: `${FADE_OUT_MS}ms`,
           filter: introVisible
-            ? "blur(2px) brightness(0.75)"
+            ? "blur(3px) brightness(0.58)"
             : "blur(0px) brightness(1)",
         }}
       />
@@ -372,20 +366,15 @@ export default function HeroPhotoSection({
 
       {/* 인트로 오버레이 */}
       <div
-        className="absolute inset-0 transition-opacity ease-out"
+        className="absolute inset-0"
         style={{
-          transitionDuration: `${FADE_OUT_MS}ms`,
-          opacity: introVisible ? 1 : 0,
           pointerEvents: introVisible ? "auto" : "none",
         }}
       >
-        <div className="absolute inset-0 bg-black/80" />
-
         <div
           className="absolute inset-0 flex items-center justify-center px-2 sm:px-4"
           style={{
-            transition: `opacity ${FADE_OUT_MS}ms ease`,
-            opacity: phase >= 2 ? 0 : 1,
+            opacity: 1,
           }}
         >
           <div className="relative w-full max-w-[470px]">
@@ -479,7 +468,25 @@ export default function HeroPhotoSection({
               </div>
             ) : null}
 
-            <IntroWeddingMark drawMs={1200} />
+            {mainPhotoReady && titleVideoVisible ? (
+              <video
+                className="block h-auto w-full"
+                src={weddingTitleVideo}
+                autoPlay
+                muted
+                playsInline
+                preload="auto"
+                aria-hidden="true"
+                onLoadedMetadata={(event) => {
+                  event.currentTarget.playbackRate = 0.7;
+                }}
+                onEnded={() => {
+                  setTitleVideoVisible(false);
+                  setPhase(3);
+                }}
+                style={{ mixBlendMode: "screen" }}
+              />
+            ) : null}
           </div>
         </div>
       </div>

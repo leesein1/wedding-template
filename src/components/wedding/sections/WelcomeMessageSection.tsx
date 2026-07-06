@@ -1,7 +1,7 @@
 /*
   WelcomeMessageSection: 환영 메시지 이미지
 */
-import welcomeImage from "@/assets/img/컬러2.png";
+import welcomeImage from "@/assets/img/비비엔다1.jpg";
 
 type WelcomeMessageSectionProps = {
   debugClass?: string;
