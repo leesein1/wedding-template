@@ -6,6 +6,7 @@
   - 아래로 스크롤된 상태에서 리로드하면 스크롤 잠금 없음
 */
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import weGotMarriedSvg from "@/assets/we-got-married.svg?raw";
 import mainPhoto from "@/assets/img/흑백1.png";
 
 type HeroPhotoSectionProps = {
@@ -21,6 +22,16 @@ type Flake = {
   driftVw: number;
   blurPx: number;
 };
+
+const introWeddingSvg = weGotMarriedSvg.replace(
+  /<path\b/g,
+  '<path pathLength="1"',
+);
+
+const introWeddingStrokeSvg = introWeddingSvg.replace(
+  /fill="[^"]*"/g,
+  'fill="none"',
+);
 
 function SnowOverlay({ active }: { active: boolean }) {
   const COUNT = 24;
@@ -93,6 +104,105 @@ function SnowOverlay({ active }: { active: boolean }) {
   );
 }
 
+function IntroWeddingMark({ drawMs }: { drawMs: number }) {
+  const fillDelayMs = Math.max(drawMs - 500, 0);
+
+  return (
+    <div className="relative mx-auto w-full max-w-[340px] sm:max-w-[380px]">
+      <div
+        aria-hidden="true"
+        className="intro-wedding-mark intro-wedding-mark-fill"
+        dangerouslySetInnerHTML={{ __html: introWeddingSvg }}
+      />
+      <div
+        aria-hidden="true"
+        className="intro-wedding-mark intro-wedding-mark-stroke absolute inset-0"
+        dangerouslySetInnerHTML={{ __html: introWeddingStrokeSvg }}
+      />
+
+      <style>{`
+        .intro-wedding-mark{
+          opacity: 0;
+          filter: blur(10px);
+          transform: translateY(8px) scale(0.97);
+          animation: introWeddingMarkReveal 850ms cubic-bezier(0.22, 1, 0.36, 1) 120ms forwards;
+        }
+
+        .intro-wedding-mark svg{
+          display: block;
+          width: 100%;
+          height: auto;
+          overflow: visible;
+        }
+
+        .intro-wedding-mark-fill path{
+          fill: rgba(255,255,255,0.16) !important;
+        }
+
+        .intro-wedding-mark-fill{
+          animation:
+            introWeddingMarkReveal 850ms cubic-bezier(0.22, 1, 0.36, 1) 120ms forwards,
+            introWeddingMarkFillLayer 950ms ease-out ${fillDelayMs}ms forwards;
+        }
+
+        .intro-wedding-mark-stroke{
+          animation: introWeddingMarkReveal 850ms cubic-bezier(0.22, 1, 0.36, 1) 120ms forwards;
+        }
+
+        .intro-wedding-mark-stroke path{
+          fill: none !important;
+          stroke: rgba(255,255,255,0.98) !important;
+          stroke-width: 1.45;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+          vector-effect: non-scaling-stroke;
+          stroke-dasharray: 1;
+          stroke-dashoffset: 1;
+          animation: introWeddingMarkDraw ${drawMs}ms cubic-bezier(0.2, 0.9, 0.2, 1) forwards;
+        }
+
+        @keyframes introWeddingMarkReveal{
+          to{
+            opacity: 1;
+            filter: blur(0px);
+            transform: translateY(0) scale(1);
+          }
+        }
+
+        @keyframes introWeddingMarkDraw{
+          to{ stroke-dashoffset: 0; }
+        }
+
+        @keyframes introWeddingMarkFillLayer{
+          to{
+            opacity: 1;
+            filter: blur(0px);
+            transform: translateY(0) scale(1);
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce){
+          .intro-wedding-mark{
+            opacity: 1;
+            filter: none;
+            transform: none;
+            animation: none;
+          }
+
+          .intro-wedding-mark-fill path{
+            fill: rgba(255,255,255,0.94) !important;
+          }
+
+          .intro-wedding-mark-stroke path{
+            stroke-dashoffset: 0;
+            animation: none;
+          }
+        }
+      `}</style>
+    </div>
+  );
+}
+
 export default function HeroPhotoSection({
   debugClass = "",
 }: HeroPhotoSectionProps) {
@@ -101,12 +211,9 @@ export default function HeroPhotoSection({
     number | null
   >(null);
 
-  const HEART_DRAW_MS = 1500;
-  const TEXT_IN_DELAY_MS = 300;
-  const HOLD_MS = 2000;
+  const INTRO_SHOW_MS = 1800;
   const FADE_OUT_MS = 1500;
   const ENABLE_SCRIPT_TITLE = false;
-  const SHOW_HEART_OUTLINE = true;
   const SCRIPT_REVEAL_MS = 1800;
 
   // 페이지 진입 시 위치를 확인하여 스크롤 잠금이 필요한지 판단한다.
@@ -209,17 +316,13 @@ export default function HeroPhotoSection({
     if (timeoutIds.current.t2) clearTimeout(timeoutIds.current.t2);
     if (timeoutIds.current.t3) clearTimeout(timeoutIds.current.t3);
 
-    timeoutIds.current.t1 = window.setTimeout(
-      () => setPhase(1),
-      HEART_DRAW_MS + TEXT_IN_DELAY_MS,
-    );
     timeoutIds.current.t2 = window.setTimeout(
       () => setPhase(2),
-      HEART_DRAW_MS + TEXT_IN_DELAY_MS + HOLD_MS,
+      INTRO_SHOW_MS,
     );
     timeoutIds.current.t3 = window.setTimeout(
       () => setPhase(3),
-      HEART_DRAW_MS + TEXT_IN_DELAY_MS + HOLD_MS + FADE_OUT_MS,
+      INTRO_SHOW_MS + FADE_OUT_MS,
     );
   }
 
@@ -233,7 +336,7 @@ export default function HeroPhotoSection({
   }, []);
 
   const introVisible = phase < 3;
-  const snowActive = phase >= 1;
+  const snowActive = phase >= 3;
 
   const systemFont =
     "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif";
@@ -374,65 +477,7 @@ export default function HeroPhotoSection({
               </div>
             ) : null}
 
-            <svg
-              viewBox="0 0 400 360"
-              className="w-full h-auto"
-              style={{ display: SHOW_HEART_OUTLINE ? "block" : "none" }}
-            >
-              <path
-                d="M200 310 C120 250,60 190,60 130 C60 75,95 50,130 50 C160 50,185 65,200 85 C215 65,240 50,270 50 C305 50,340 75,340 130 C340 190,280 250,200 310 Z"
-                fill="none"
-                stroke="white"
-                strokeWidth="6"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                style={{
-                  strokeDasharray: 1400,
-                  strokeDashoffset: phase === 0 ? 1400 : 0,
-                  transition: `stroke-dashoffset ${
-                    HEART_DRAW_MS + 2500
-                  }ms ease-out`,
-                }}
-              />
-
-              <g
-                style={{
-                  opacity: phase >= 1 ? 1 : 0,
-                  transform: phase >= 1 ? "translateY(0px)" : "translateY(6px)",
-                  transition:
-                    "opacity 600ms ease-out, transform 600ms ease-out",
-                }}
-              >
-                <text
-                  x="200"
-                  y="155"
-                  textAnchor="middle"
-                  fill="white"
-                  style={{
-                    fontFamily: "cursive",
-                    fontStyle: "italic",
-                    fontSize: 28,
-                  }}
-                >
-                  Welcome to our
-                </text>
-
-                <text
-                  x="200"
-                  y="198"
-                  textAnchor="middle"
-                  fill="white"
-                  style={{
-                    fontFamily: "serif",
-                    fontWeight: 700,
-                    fontSize: 38,
-                    letterSpacing: "0.06em",
-                  }}
-                >
-                  WEDDING
-                </text>
-              </g>
-            </svg>
+            <IntroWeddingMark drawMs={1200} />
           </div>
         </div>
       </div>
