@@ -23,10 +23,12 @@ type Flake = {
   blurPx: number;
 };
 
-const introWeddingSvg = weGotMarriedSvg.replace(
-  /<path\b/g,
-  '<path pathLength="1"',
-);
+const introWeddingSvg = weGotMarriedSvg
+  // The source artwork has a large empty portrait canvas around the lettering.
+  // Crop to the actual paths so the mark, rather than its whitespace, fills the box.
+  .replace(/viewBox="[^"]*"/, 'viewBox="65 285 405 235"')
+  .replace(/preserveAspectRatio="[^"]*"/, 'preserveAspectRatio="xMidYMid meet"')
+  .replace(/<path\b/g, '<path pathLength="1"');
 
 const introWeddingStrokeSvg = introWeddingSvg.replace(
   /fill="[^"]*"/g,
@@ -108,7 +110,7 @@ function IntroWeddingMark({ drawMs }: { drawMs: number }) {
   const fillDelayMs = Math.max(drawMs - 500, 0);
 
   return (
-    <div className="relative mx-auto w-full max-w-[340px] sm:max-w-[380px]">
+    <div className="relative mx-auto w-full max-w-[430px] sm:max-w-[470px]">
       <div
         aria-hidden="true"
         className="intro-wedding-mark intro-wedding-mark-fill"
@@ -136,7 +138,7 @@ function IntroWeddingMark({ drawMs }: { drawMs: number }) {
         }
 
         .intro-wedding-mark-fill path{
-          fill: rgba(255,255,255,0.16) !important;
+          fill: rgba(255,255,255,0.98) !important;
         }
 
         .intro-wedding-mark-fill{
@@ -190,7 +192,7 @@ function IntroWeddingMark({ drawMs }: { drawMs: number }) {
           }
 
           .intro-wedding-mark-fill path{
-            fill: rgba(255,255,255,0.94) !important;
+            fill: rgba(255,255,255,0.98) !important;
           }
 
           .intro-wedding-mark-stroke path{
@@ -380,13 +382,13 @@ export default function HeroPhotoSection({
         <div className="absolute inset-0 bg-black/80" />
 
         <div
-          className="absolute inset-0 flex items-center justify-center px-6"
+          className="absolute inset-0 flex items-center justify-center px-2 sm:px-4"
           style={{
             transition: `opacity ${FADE_OUT_MS}ms ease`,
             opacity: phase >= 2 ? 0 : 1,
           }}
         >
-          <div className="relative w-full max-w-[380px]">
+          <div className="relative w-full max-w-[470px]">
             {ENABLE_SCRIPT_TITLE ? (
               <div
                 className="pointer-events-none absolute inset-0 z-10"
