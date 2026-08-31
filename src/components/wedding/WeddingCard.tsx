@@ -22,17 +22,11 @@ const WeddingCard: React.FC<WeddingCardProps> = ({ children }) => {
   return (
     <div className="relative min-h-screen w-full bg-[#ecebe8] flex justify-center">
       {/* left edge shadow; adjust width/opacity/blur to control intensity */}
-      <div className="pointer-events-none absolute left-0 top-0 h-full w-16 bg-gradient-to-r from-black/18 to-transparent blur-[0.5px]" />
+      <div className="pointer-events-none absolute left-0 top-0 hidden h-full w-16 bg-gradient-to-r from-black/18 to-transparent blur-[0.5px] min-[431px]:block" />
       {/* right edge shadow */}
-      <div className="pointer-events-none absolute right-0 top-0 h-full w-16 bg-gradient-to-l from-black/18 to-transparent blur-[0.5px]" />
+      <div className="pointer-events-none absolute right-0 top-0 hidden h-full w-16 bg-gradient-to-l from-black/18 to-transparent blur-[0.5px] min-[431px]:block" />
 
-      <div
-        className="relative w-full max-w-[430px] bg-[#fbfbfb] text-black flex flex-col"
-        style={{
-          boxShadow:
-            "0 28px 70px rgba(0,0,0,0.14), 0 10px 22px rgba(0,0,0,0.07)",
-        }}
-      >
+      <div className="relative w-full max-w-[430px] bg-[#fbfbfb] text-black flex flex-col min-[431px]:shadow-[0_28px_70px_rgba(0,0,0,0.14),0_10px_22px_rgba(0,0,0,0.07)]">
         {/* subtle top highlight mimicking paper gloss */}
         <div className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-white/70 to-transparent" />
         {children}

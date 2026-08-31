@@ -5,7 +5,14 @@
   - 맨 위에 있으면 스크롤 잠금 & 애니메이션 재생
   - 아래로 스크롤된 상태에서 리로드하면 스크롤 잠금 없음
 */
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import weGotMarriedSvg from "@/assets/we-got-married.svg?raw";
 import weddingTitleVideo from "@/assets/our-wedding-title.mp4";
 import mainPhoto from "@/assets/img/비비엔다2.webp";
@@ -14,14 +21,15 @@ type HeroPhotoSectionProps = {
   debugClass?: string;
 };
 
-type Flake = {
+type Star = {
   leftPct: number;
+  topPct: number;
   sizePx: number;
   opacity: number;
   durationS: number;
   delayS: number;
-  driftVw: number;
   blurPx: number;
+  glowPx: number;
 };
 
 const introWeddingSvg = weGotMarriedSvg
@@ -36,21 +44,26 @@ const introWeddingStrokeSvg = introWeddingSvg.replace(
   'fill="none"',
 );
 
-function SnowOverlay({ active }: { active: boolean }) {
-  const COUNT = 24;
+function StarOverlay({ active }: { active: boolean }) {
+  const COUNT = 34;
 
-  const flakes = useMemo<Flake[]>(() => {
-    const rand = (min: number, max: number) =>
-      min + Math.random() * (max - min);
+  const stars = useMemo<Star[]>(() => {
+    const seededRand = (seed: number) => {
+      const x = Math.sin(seed * 999) * 10000;
+      return x - Math.floor(x);
+    };
+    const rand = (seed: number, min: number, max: number) =>
+      min + seededRand(seed) * (max - min);
 
-    return Array.from({ length: COUNT }).map(() => ({
-      leftPct: rand(45, 105),
-      sizePx: rand(4, 10),
-      opacity: rand(0.4, 0.6),
-      durationS: rand(9, 15),
-      delayS: -rand(0, 12),
-      driftVw: rand(22, 42),
-      blurPx: rand(0, 0.8),
+    return Array.from({ length: COUNT }).map((_, index) => ({
+      leftPct: rand(index + 1, 7, 93),
+      topPct: rand(index + 31, 8, 82),
+      sizePx: rand(index + 61, 3.4, 9.5),
+      opacity: rand(index + 91, 0.35, 0.82),
+      durationS: rand(index + 121, 2.4, 5.8),
+      delayS: -rand(index + 151, 0, 5.8),
+      blurPx: rand(index + 181, 0, 0.45),
+      glowPx: rand(index + 211, 10, 22),
     }));
   }, []);
 
@@ -59,19 +72,20 @@ function SnowOverlay({ active }: { active: boolean }) {
   return (
     <>
       <div className="pointer-events-none absolute inset-0 overflow-hidden z-[5]">
-        {flakes.map((f, i) => (
+        {stars.map((star, i) => (
           <span
             key={i}
-            className="snowflake"
+            className="hero-star"
             style={
               {
-                left: `${f.leftPct}%`,
-                "--size": `${f.sizePx}px`,
-                "--opacity": f.opacity,
-                "--dur": `${f.durationS}s`,
-                "--delay": `${f.delayS}s`,
-                "--drift": `${f.driftVw}vw`,
-                "--blur": `${f.blurPx}px`,
+                left: `${star.leftPct}%`,
+                top: `${star.topPct}%`,
+                "--size": `${star.sizePx}px`,
+                "--opacity": star.opacity,
+                "--dur": `${star.durationS}s`,
+                "--delay": `${star.delayS}s`,
+                "--blur": `${star.blurPx}px`,
+                "--glow": `${star.glowPx}px`,
               } as React.CSSProperties
             }
           />
@@ -79,28 +93,62 @@ function SnowOverlay({ active }: { active: boolean }) {
       </div>
 
       <style>{`
-        .snowflake{
+        .hero-star{
           position:absolute;
-          top:-12vh;
           width: var(--size);
           height: var(--size);
-          opacity: var(--opacity);
+          opacity: 0;
           filter: blur(var(--blur));
-          border-radius: 999px;
-          background: rgba(255,255,255,0.95);
-          box-shadow: 0 0 10px rgba(255,255,255,0.15);
-          animation: snowFallDiagonal var(--dur) linear var(--delay) infinite;
+          background: linear-gradient(135deg, rgba(255,255,255,1), rgba(255,241,203,0.92));
+          clip-path: polygon(50% 0%, 61% 38%, 100% 50%, 61% 62%, 50% 100%, 39% 62%, 0% 50%, 39% 38%);
+          box-shadow:
+            0 0 var(--glow) rgba(255,255,255,0.82),
+            0 0 calc(var(--glow) * 1.8) rgba(255,235,190,0.32);
+          transform: translate(-50%, -50%) scale(0.72);
+          animation: heroStarTwinkle var(--dur) ease-in-out var(--delay) infinite;
         }
 
-        @keyframes snowFallDiagonal{
-          0%{ transform: translate3d(0, -10vh, 0); }
-          100%{
-            transform: translate3d(calc(-1 * var(--drift)), 115vh, 0);
+        .hero-star::before,
+        .hero-star::after{
+          content:"";
+          position:absolute;
+          inset:50% auto auto 50%;
+          width: calc(var(--size) * 5.2);
+          height: 1px;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.92), transparent);
+          transform: translate(-50%, -50%);
+          opacity: 0.86;
+        }
+
+        .hero-star::after{
+          width: 1px;
+          height: calc(var(--size) * 5.2);
+          background: linear-gradient(180deg, transparent, rgba(255,255,255,0.92), transparent);
+          transform: translate(-50%, -50%);
+        }
+
+        @keyframes heroStarTwinkle{
+          0%, 100%{
+            opacity: 0.12;
+            transform: translate(-50%, -50%) scale(0.72) rotate(0deg);
+          }
+
+          42%{
+            opacity: var(--opacity);
+            transform: translate(-50%, -50%) scale(1.18) rotate(18deg);
+          }
+
+          58%{
+            opacity: calc(var(--opacity) * 0.55);
+            transform: translate(-50%, -50%) scale(0.92) rotate(28deg);
           }
         }
 
         @media (prefers-reduced-motion: reduce){
-          .snowflake{ animation: none; }
+          .hero-star{
+            opacity: var(--opacity);
+            animation: none;
+          }
         }
       `}</style>
     </>
@@ -212,14 +260,18 @@ export default function HeroPhotoSection({
   const [phase, setPhase] = useState<0 | 1 | 2 | 3>(0);
   const [mainPhotoReady, setMainPhotoReady] = useState(false);
   const [titleVideoVisible, setTitleVideoVisible] = useState(true);
+  const [titleVideoFading, setTitleVideoFading] = useState(false);
   const [lockedViewportHeight, setLockedViewportHeight] = useState<
     number | null
   >(null);
 
-  const INTRO_SHOW_MS = 2200;
+  const MIN_INTRO_SHOW_MS = 2600;
   const FADE_OUT_MS = 700;
   const ENABLE_SCRIPT_TITLE = false;
   const SCRIPT_REVEAL_MS = 2000;
+  const titleVideoStartedAtRef = useRef<number | null>(null);
+  const finishTimerRef = useRef<number | null>(null);
+  const fallbackTimerRef = useRef<number | null>(null);
 
   // 페이지 진입 시 위치를 확인하여 스크롤 잠금이 필요한지 판단한다.
   // 사용자가 화면을 내린 채로 새로고침/이전/다음 네비게이션을 하면
@@ -238,7 +290,7 @@ export default function HeroPhotoSection({
     // 상단에 있으면 스크롤을 맨 위로 고정
     window.scrollTo(0, 0);
 
-    const onPageShow = (_e: PageTransitionEvent) => {
+    const onPageShow = () => {
       // 매번 pageshow 시에도 위치 확인
       if (window.scrollY > 5) {
         shouldLockRef.current = false;
@@ -255,22 +307,58 @@ export default function HeroPhotoSection({
   // 스크롤 잠금/해제 로직: 잠금 시 스크롤바 너비만큼 우측 패딩을
   // 추가하여 레이아웃이 좌우로 흔들리는 현상을 막는다.
   useEffect(() => {
-    const updateViewportHeight = () => {
-      if (phase < 3) return;
-      setLockedViewportHeight(window.innerHeight);
+    const updateViewportHeightAfterRotation = () => {
+      window.setTimeout(() => {
+        setLockedViewportHeight(window.innerHeight);
+      }, 300);
     };
 
-    window.addEventListener("resize", updateViewportHeight);
-    window.addEventListener("orientationchange", updateViewportHeight);
+    window.addEventListener("orientationchange", updateViewportHeightAfterRotation);
 
     return () => {
-      window.removeEventListener("resize", updateViewportHeight);
-      window.removeEventListener("orientationchange", updateViewportHeight);
+      window.removeEventListener(
+        "orientationchange",
+        updateViewportHeightAfterRotation,
+      );
     };
-  }, [phase]);
+  }, []);
 
   const prevOverflow = useRef<string>("");
   const prevPaddingRight = useRef<string>("");
+
+  const clearIntroTimers = useCallback(() => {
+    if (finishTimerRef.current !== null) {
+      window.clearTimeout(finishTimerRef.current);
+      finishTimerRef.current = null;
+    }
+
+    if (fallbackTimerRef.current !== null) {
+      window.clearTimeout(fallbackTimerRef.current);
+      fallbackTimerRef.current = null;
+    }
+  }, []);
+
+  const finishIntro = useCallback(() => {
+    if (phase >= 3 || titleVideoFading) return;
+
+    const startedAt = titleVideoStartedAtRef.current ?? performance.now();
+    titleVideoStartedAtRef.current = startedAt;
+    const elapsedMs = performance.now() - startedAt;
+    const waitMs = Math.max(MIN_INTRO_SHOW_MS - elapsedMs, 0);
+
+    if (finishTimerRef.current !== null) {
+      window.clearTimeout(finishTimerRef.current);
+    }
+
+    finishTimerRef.current = window.setTimeout(() => {
+      setTitleVideoFading(true);
+      finishTimerRef.current = window.setTimeout(() => {
+        setTitleVideoVisible(false);
+        setPhase(3);
+        finishTimerRef.current = null;
+      }, FADE_OUT_MS);
+    }, waitMs);
+  }, [phase, titleVideoFading]);
 
   function lockScroll() {
     // 스크롤바 너비 계산
@@ -294,8 +382,9 @@ export default function HeroPhotoSection({
 
     return () => {
       unlockScroll();
+      clearIntroTimers();
     };
-  }, []);
+  }, [clearIntroTimers]);
 
   useEffect(() => {
     // shouldLockRef.current가 false면 스크롤 제어 안 함
@@ -311,26 +400,26 @@ export default function HeroPhotoSection({
     }
   }, [phase]);
 
-  // Start the intro clock only after the hero photo is available to paint.
+  // Start a gentle fallback only after the hero photo is available to paint.
+  // Kakao's in-app browser can delay video events, so the normal path follows
+  // `playing`/`ended` while this keeps the page from getting stuck.
   useEffect(() => {
     if (!mainPhotoReady) return;
 
-    // Fallback for browsers that fail to emit the video's `ended` event.
-    const finishTimer = window.setTimeout(
-      () => {
-        setTitleVideoVisible(false);
-        setPhase(3);
-      },
-      INTRO_SHOW_MS,
-    );
+    fallbackTimerRef.current = window.setTimeout(() => {
+      finishIntro();
+    }, 5200);
 
     return () => {
-      window.clearTimeout(finishTimer);
+      if (fallbackTimerRef.current !== null) {
+        window.clearTimeout(fallbackTimerRef.current);
+        fallbackTimerRef.current = null;
+      }
     };
-  }, [mainPhotoReady]);
+  }, [finishIntro, mainPhotoReady]);
 
   const introVisible = phase < 3;
-  const snowActive = phase >= 3;
+  const starActive = phase >= 3;
 
   const systemFont =
     "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif";
@@ -340,10 +429,7 @@ export default function HeroPhotoSection({
       className={`relative w-full overflow-hidden ${debugClass}`}
       style={{
         fontFamily: systemFont,
-        height:
-          phase < 3 && lockedViewportHeight
-            ? `${lockedViewportHeight}px`
-            : "100svh",
+        height: lockedViewportHeight ? `${lockedViewportHeight}px` : "100vh",
       }}
     >
       {/* 배경 */}
@@ -362,7 +448,7 @@ export default function HeroPhotoSection({
         }}
       />
 
-      <SnowOverlay active={snowActive} />
+      <StarOverlay active={starActive} />
 
       {/* 인트로 오버레이 */}
       <div
@@ -478,13 +564,25 @@ export default function HeroPhotoSection({
                 preload="auto"
                 aria-hidden="true"
                 onLoadedMetadata={(event) => {
-                  event.currentTarget.playbackRate = 0.7;
+                  event.currentTarget.playbackRate = 0.82;
+                }}
+                onPlaying={() => {
+                  titleVideoStartedAtRef.current ??= performance.now();
                 }}
                 onEnded={() => {
-                  setTitleVideoVisible(false);
-                  setPhase(3);
+                  finishIntro();
                 }}
-                style={{ mixBlendMode: "screen" }}
+                onError={() => {
+                  finishIntro();
+                }}
+                style={{
+                  mixBlendMode: "screen",
+                  opacity: titleVideoFading ? 0 : 1,
+                  transform: titleVideoFading
+                    ? "translateY(-4px) scale(0.99)"
+                    : "translateY(0) scale(1)",
+                  transition: `opacity ${FADE_OUT_MS}ms ease, transform ${FADE_OUT_MS}ms ease`,
+                }}
               />
             ) : null}
           </div>
