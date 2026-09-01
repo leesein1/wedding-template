@@ -275,6 +275,16 @@ export default function HeroPhotoSection({
   const finishTimerRef = useRef<number | null>(null);
   const fallbackTimerRef = useRef<number | null>(null);
 
+  const hideInitialCover = useCallback(() => {
+    const cover = document.getElementById("initial-cover");
+    if (!cover) return;
+
+    cover.classList.add("is-hidden");
+    window.setTimeout(() => {
+      cover.remove();
+    }, 560);
+  }, []);
+
   // 페이지 진입 시 위치를 확인하여 스크롤 잠금이 필요한지 판단한다.
   // 사용자가 화면을 내린 채로 새로고침/이전/다음 네비게이션을 하면
   // 브라우저가 그 위치를 복원한다. 이때 잠금하지 않기 위해 `shouldLock`을
@@ -303,6 +313,7 @@ export default function HeroPhotoSection({
     // 초기 브라우저 복원 위치가 5px 이상 내려가 있으면 잠금 안 함
     if (window.scrollY > 5) {
       shouldLockRef.current = false;
+      hideInitialCover();
       return () => window.cancelAnimationFrame(raf);
     }
 
@@ -313,6 +324,7 @@ export default function HeroPhotoSection({
       // 매번 pageshow 시에도 위치 확인
       if (window.scrollY > 5) {
         shouldLockRef.current = false;
+        hideInitialCover();
       } else {
         shouldLockRef.current = true;
         window.scrollTo(0, 0);
@@ -324,7 +336,7 @@ export default function HeroPhotoSection({
       window.cancelAnimationFrame(raf);
       window.removeEventListener("pageshow", onPageShow);
     };
-  }, []);
+  }, [hideInitialCover]);
 
   // 스크롤 잠금/해제 로직: 잠금 시 스크롤바 너비만큼 우측 패딩을
   // 추가하여 레이아웃이 좌우로 흔들리는 현상을 막는다.
@@ -407,6 +419,12 @@ export default function HeroPhotoSection({
   }
 
   useEffect(() => {
+    const fallback = window.setTimeout(hideInitialCover, 3600);
+
+    return () => window.clearTimeout(fallback);
+  }, [hideInitialCover]);
+
+  useEffect(() => {
     // 마운트 시 한 번만 원래 스타일을 저장
     prevHtmlOverflow.current = document.documentElement.style.overflow;
     prevOverscrollBehavior.current =
@@ -474,7 +492,11 @@ export default function HeroPhotoSection({
         fetchPriority="high"
         loading="eager"
         decoding="sync"
-        onLoad={() => setMainPhotoReady(true)}
+        onLoad={() => {
+          setMainPhotoReady(true);
+          hideInitialCover();
+        }}
+        onError={hideInitialCover}
         className="absolute inset-0 w-full h-full object-cover object-center transition-all ease-out"
         style={{
           transitionDuration: `${FADE_OUT_MS}ms`,
