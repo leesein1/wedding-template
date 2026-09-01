@@ -14,7 +14,7 @@ import {
   useState,
 } from "react";
 import weGotMarriedSvg from "@/assets/we-got-married.svg?raw";
-import weddingTitleVideo from "@/assets/our-wedding-title.mp4";
+import weddingTitleWebp from "@/assets/our-wedding-title.webp";
 
 const mainPhoto = `${import.meta.env.BASE_URL}hero-main.webp`;
 
@@ -56,16 +56,34 @@ function StarOverlay({ active }: { active: boolean }) {
     const rand = (seed: number, min: number, max: number) =>
       min + seededRand(seed) * (max - min);
 
-    return Array.from({ length: COUNT }).map((_, index) => ({
-      leftPct: rand(index + 1, 7, 93),
-      topPct: rand(index + 31, 8, 82),
-      sizePx: rand(index + 61, 4.1, 11),
-      opacity: rand(index + 91, 0.485, 0.9),
-      durationS: rand(index + 121, 2.4, 5.8),
-      delayS: -rand(index + 151, 0, 5.8),
-      blurPx: rand(index + 181, 0, 0.315),
-      glowPx: rand(index + 211, 12, 26),
-    }));
+    return Array.from({ length: COUNT }).map((_, index) => {
+      let leftPct = rand(index + 1, 7, 93);
+      let topPct = rand(index + 31, 8, 82);
+
+      const isBrideFaceZone =
+        leftPct > 8 && leftPct < 43 && topPct > 18 && topPct < 47;
+      const isGroomFaceZone =
+        leftPct > 43 && leftPct < 88 && topPct > 12 && topPct < 45;
+
+      if (isBrideFaceZone || isGroomFaceZone) {
+        const lane = index % 4;
+        if (lane === 0) topPct = rand(index + 401, 8, 16);
+        if (lane === 1) leftPct = rand(index + 421, 7, 13);
+        if (lane === 2) leftPct = rand(index + 441, 89, 93);
+        if (lane === 3) topPct = rand(index + 461, 66, 82);
+      }
+
+      return {
+        leftPct,
+        topPct,
+        sizePx: rand(index + 61, 4.1, 11),
+        opacity: rand(index + 91, 0.485, 0.9),
+        durationS: rand(index + 121, 2.4, 5.8),
+        delayS: -rand(index + 151, 0, 5.8),
+        blurPx: rand(index + 181, 0, 0.315),
+        glowPx: rand(index + 211, 12, 26),
+      };
+    });
   }, []);
 
   if (!active) return null;
@@ -268,6 +286,7 @@ export default function HeroPhotoSection({
   >(null);
 
   const MIN_INTRO_SHOW_MS = 2600;
+  const WEBP_INTRO_SHOW_MS = 2400;
   const FADE_OUT_MS = 700;
   const ENABLE_SCRIPT_TITLE = false;
   const SCRIPT_REVEAL_MS = 2000;
@@ -460,7 +479,7 @@ export default function HeroPhotoSection({
 
     fallbackTimerRef.current = window.setTimeout(() => {
       finishIntro();
-    }, 5200);
+    }, WEBP_INTRO_SHOW_MS);
 
     return () => {
       if (fallbackTimerRef.current !== null) {
@@ -615,22 +634,14 @@ export default function HeroPhotoSection({
             ) : null}
 
             {mainPhotoReady && titleVideoVisible ? (
-              <video
+              <img
                 className="block h-auto w-full"
-                src={weddingTitleVideo}
-                autoPlay
-                muted
-                playsInline
-                preload="metadata"
+                src={weddingTitleWebp}
                 aria-hidden="true"
-                onLoadedMetadata={(event) => {
-                  event.currentTarget.playbackRate = 0.82;
-                }}
-                onPlaying={() => {
+                alt=""
+                decoding="async"
+                onLoad={() => {
                   titleVideoStartedAtRef.current ??= performance.now();
-                }}
-                onEnded={() => {
-                  finishIntro();
                 }}
                 onError={() => {
                   finishIntro();
