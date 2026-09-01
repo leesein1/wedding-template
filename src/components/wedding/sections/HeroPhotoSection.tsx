@@ -58,12 +58,12 @@ function StarOverlay({ active }: { active: boolean }) {
     return Array.from({ length: COUNT }).map((_, index) => ({
       leftPct: rand(index + 1, 7, 93),
       topPct: rand(index + 31, 8, 82),
-      sizePx: rand(index + 61, 3.4, 9.5),
-      opacity: rand(index + 91, 0.35, 0.82),
+      sizePx: rand(index + 61, 4.1, 11),
+      opacity: rand(index + 91, 0.485, 0.9),
       durationS: rand(index + 121, 2.4, 5.8),
       delayS: -rand(index + 151, 0, 5.8),
-      blurPx: rand(index + 181, 0, 0.45),
-      glowPx: rand(index + 211, 10, 22),
+      blurPx: rand(index + 181, 0, 0.315),
+      glowPx: rand(index + 211, 12, 26),
     }));
   }, []);
 
@@ -99,11 +99,12 @@ function StarOverlay({ active }: { active: boolean }) {
           height: var(--size);
           opacity: 0;
           filter: blur(var(--blur));
-          background: linear-gradient(135deg, rgba(255,255,255,1), rgba(255,241,203,0.92));
+          background: linear-gradient(135deg, rgba(255,255,255,1), rgba(255,244,209,0.95) 48%, rgba(255,255,255,0.94));
           clip-path: polygon(50% 0%, 61% 38%, 100% 50%, 61% 62%, 50% 100%, 39% 62%, 0% 50%, 39% 38%);
           box-shadow:
-            0 0 var(--glow) rgba(255,255,255,0.82),
-            0 0 calc(var(--glow) * 1.8) rgba(255,235,190,0.32);
+            0 0 1px rgba(255,255,255,0.72),
+            0 0 var(--glow) rgba(255,255,255,0.87),
+            0 0 calc(var(--glow) * 1.82) rgba(255,232,178,0.37);
           transform: translate(-50%, -50%) scale(0.72);
           animation: heroStarTwinkle var(--dur) ease-in-out var(--delay) infinite;
         }
@@ -117,7 +118,7 @@ function StarOverlay({ active }: { active: boolean }) {
           height: 1px;
           background: linear-gradient(90deg, transparent, rgba(255,255,255,0.92), transparent);
           transform: translate(-50%, -50%);
-          opacity: 0.86;
+          opacity: 0.91;
         }
 
         .hero-star::after{
@@ -129,18 +130,18 @@ function StarOverlay({ active }: { active: boolean }) {
 
         @keyframes heroStarTwinkle{
           0%, 100%{
-            opacity: 0.12;
-            transform: translate(-50%, -50%) scale(0.72) rotate(0deg);
+            opacity: 0.18;
+            transform: translate(-50%, -50%) scale(0.75) rotate(0deg);
           }
 
           42%{
             opacity: var(--opacity);
-            transform: translate(-50%, -50%) scale(1.18) rotate(18deg);
+            transform: translate(-50%, -50%) scale(1.26) rotate(18deg);
           }
 
           58%{
-            opacity: calc(var(--opacity) * 0.55);
-            transform: translate(-50%, -50%) scale(0.92) rotate(28deg);
+            opacity: calc(var(--opacity) * 0.615);
+            transform: translate(-50%, -50%) scale(0.96) rotate(28deg);
           }
         }
 
@@ -280,11 +281,28 @@ export default function HeroPhotoSection({
   const shouldLockRef = useRef(true);
 
   useLayoutEffect(() => {
-    setLockedViewportHeight(window.innerHeight);
+    const measureViewportHeight = () =>
+      Math.round(window.visualViewport?.height ?? window.innerHeight);
+
+    setLockedViewportHeight(measureViewportHeight());
+
+    const raf = window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        const settledHeight = measureViewportHeight();
+
+        setLockedViewportHeight((previousHeight) => {
+          if (!previousHeight || Math.abs(previousHeight - settledHeight) > 64) {
+            return settledHeight;
+          }
+
+          return previousHeight;
+        });
+      });
+    });
     // 초기 브라우저 복원 위치가 5px 이상 내려가 있으면 잠금 안 함
     if (window.scrollY > 5) {
       shouldLockRef.current = false;
-      return;
+      return () => window.cancelAnimationFrame(raf);
     }
 
     // 상단에 있으면 스크롤을 맨 위로 고정
@@ -301,7 +319,10 @@ export default function HeroPhotoSection({
     };
 
     window.addEventListener("pageshow", onPageShow);
-    return () => window.removeEventListener("pageshow", onPageShow);
+    return () => {
+      window.cancelAnimationFrame(raf);
+      window.removeEventListener("pageshow", onPageShow);
+    };
   }, []);
 
   // 스크롤 잠금/해제 로직: 잠금 시 스크롤바 너비만큼 우측 패딩을
@@ -309,7 +330,9 @@ export default function HeroPhotoSection({
   useEffect(() => {
     const updateViewportHeightAfterRotation = () => {
       window.setTimeout(() => {
-        setLockedViewportHeight(window.innerHeight);
+        setLockedViewportHeight(
+          Math.round(window.visualViewport?.height ?? window.innerHeight),
+        );
       }, 300);
     };
 
@@ -324,6 +347,8 @@ export default function HeroPhotoSection({
   }, []);
 
   const prevOverflow = useRef<string>("");
+  const prevHtmlOverflow = useRef<string>("");
+  const prevOverscrollBehavior = useRef<string>("");
   const prevPaddingRight = useRef<string>("");
 
   const clearIntroTimers = useCallback(() => {
@@ -367,16 +392,24 @@ export default function HeroPhotoSection({
     if (scrollbarWidth > 0) {
       document.body.style.paddingRight = `${scrollbarWidth}px`;
     }
+    document.documentElement.style.overflow = "hidden";
+    document.documentElement.style.overscrollBehaviorY = "none";
     document.body.style.overflow = "hidden";
   }
 
   function unlockScroll() {
+    document.documentElement.style.overflow = prevHtmlOverflow.current;
+    document.documentElement.style.overscrollBehaviorY =
+      prevOverscrollBehavior.current;
     document.body.style.overflow = prevOverflow.current;
     document.body.style.paddingRight = prevPaddingRight.current;
   }
 
   useEffect(() => {
     // 마운트 시 한 번만 원래 스타일을 저장
+    prevHtmlOverflow.current = document.documentElement.style.overflow;
+    prevOverscrollBehavior.current =
+      document.documentElement.style.overscrollBehaviorY;
     prevOverflow.current = document.body.style.overflow;
     prevPaddingRight.current = document.body.style.paddingRight;
 
@@ -429,7 +462,8 @@ export default function HeroPhotoSection({
       className={`relative w-full overflow-hidden ${debugClass}`}
       style={{
         fontFamily: systemFont,
-        height: lockedViewportHeight ? `${lockedViewportHeight}px` : "100vh",
+        height: lockedViewportHeight ? `${lockedViewportHeight}px` : "100svh",
+        minHeight: "100svh",
       }}
     >
       {/* 배경 */}
@@ -445,6 +479,8 @@ export default function HeroPhotoSection({
           filter: introVisible
             ? "blur(3px) brightness(0.58)"
             : "blur(0px) brightness(1)",
+          transform: introVisible ? "scale(1.035)" : "scale(1)",
+          transformOrigin: "center",
         }}
       />
 
@@ -458,12 +494,12 @@ export default function HeroPhotoSection({
         }}
       >
         <div
-          className="absolute inset-0 flex items-center justify-center px-2 sm:px-4"
+          className="absolute inset-0 flex items-center justify-center"
           style={{
             opacity: 1,
           }}
         >
-          <div className="relative w-full max-w-[470px]">
+          <div className="relative w-full max-w-[470px] px-2 sm:px-4">
             {ENABLE_SCRIPT_TITLE ? (
               <div
                 className="pointer-events-none absolute inset-0 z-10"

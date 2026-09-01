@@ -13,8 +13,9 @@ import {
   GallerySection,
   HeaderSection,
   HeroPhotoSection,
+  InterviewSection,
   LocationSection,
-  TimelineSection,
+  // TimelineSection,
   WelcomeMessageSection,
   FooterSection,
 } from "@/components/wedding/sections";
@@ -60,7 +61,8 @@ export default function MainWedding() {
     { Component: DateTitleSection, delay: 60 },
     { Component: CalendarSection, delay: 80 },
     { Component: AboutUsSection, delay: 100 },
-    { Component: TimelineSection, delay: 120 },
+    // { Component: TimelineSection, delay: 120 },
+    { Component: InterviewSection, delay: 120 },
     { Component: GallerySection, delay: 140 },
     { Component: AccountSection, delay: 160 },
   ] as const;

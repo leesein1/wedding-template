@@ -12,5 +12,6 @@ export { default as ShareSection } from "./ShareSection";
 // 여기에서 내보내면 인덱스에서 한 줄로 모두 가져올 수 있습니다.
 export { default as DateTitleSection } from "./DateTitleSection";
 export { default as AboutUsSection } from "./AboutUsSection";
+export { default as InterviewSection } from "./InterviewSection";
 export { default as TimelineSection } from "./TimelineSection";
 export { default as FooterSection } from "./FooterSection";
