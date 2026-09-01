@@ -16,6 +16,8 @@ export default function WelcomeMessageSection({
       <img
         src={welcomeImage}
         alt="Welcome"
+        loading="lazy"
+        decoding="async"
         className="mx-auto w-full max-w-[430px] object-contain"
       />
     </section>

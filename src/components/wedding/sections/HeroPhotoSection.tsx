@@ -15,7 +15,8 @@ import {
 } from "react";
 import weGotMarriedSvg from "@/assets/we-got-married.svg?raw";
 import weddingTitleVideo from "@/assets/our-wedding-title.mp4";
-import mainPhoto from "@/assets/img/비비엔다2.webp";
+
+const mainPhoto = `${import.meta.env.BASE_URL}hero-main.webp`;
 
 type HeroPhotoSectionProps = {
   debugClass?: string;
@@ -471,7 +472,8 @@ export default function HeroPhotoSection({
         src={mainPhoto}
         alt="웨딩 메인 사진"
         fetchPriority="high"
-        decoding="async"
+        loading="eager"
+        decoding="sync"
         onLoad={() => setMainPhotoReady(true)}
         className="absolute inset-0 w-full h-full object-cover object-center transition-all ease-out"
         style={{
@@ -597,7 +599,7 @@ export default function HeroPhotoSection({
                 autoPlay
                 muted
                 playsInline
-                preload="auto"
+                preload="metadata"
                 aria-hidden="true"
                 onLoadedMetadata={(event) => {
                   event.currentTarget.playbackRate = 0.82;

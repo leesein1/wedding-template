@@ -276,6 +276,8 @@ function PeekSlider({
               <img
                 src={src}
                 alt={`gallery ${i + 1}`}
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover"
                 draggable={false}
               />
