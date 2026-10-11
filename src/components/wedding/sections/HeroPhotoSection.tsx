@@ -17,6 +17,7 @@ import weGotMarriedSvg from "@/assets/we-got-married.svg?raw";
 import weddingTitleWebp from "@/assets/our-wedding-title.webp";
 
 const mainPhoto = `${import.meta.env.BASE_URL}hero-main.webp`;
+const titleImageAspectRatio = "754 / 1132";
 
 type HeroPhotoSectionProps = {
   debugClass?: string;
@@ -357,8 +358,6 @@ export default function HeroPhotoSection({
     };
   }, [hideInitialCover]);
 
-  // 스크롤 잠금/해제 로직: 잠금 시 스크롤바 너비만큼 우측 패딩을
-  // 추가하여 레이아웃이 좌우로 흔들리는 현상을 막는다.
   useEffect(() => {
     const updateViewportHeightAfterRotation = () => {
       window.setTimeout(() => {
@@ -381,7 +380,6 @@ export default function HeroPhotoSection({
   const prevOverflow = useRef<string>("");
   const prevHtmlOverflow = useRef<string>("");
   const prevOverscrollBehavior = useRef<string>("");
-  const prevPaddingRight = useRef<string>("");
 
   const clearIntroTimers = useCallback(() => {
     if (finishTimerRef.current !== null) {
@@ -418,12 +416,6 @@ export default function HeroPhotoSection({
   }, [phase, titleVideoFading]);
 
   function lockScroll() {
-    // 스크롤바 너비 계산
-    const scrollbarWidth =
-      window.innerWidth - document.documentElement.clientWidth;
-    if (scrollbarWidth > 0) {
-      document.body.style.paddingRight = `${scrollbarWidth}px`;
-    }
     document.documentElement.style.overflow = "hidden";
     document.documentElement.style.overscrollBehaviorY = "none";
     document.body.style.overflow = "hidden";
@@ -434,7 +426,6 @@ export default function HeroPhotoSection({
     document.documentElement.style.overscrollBehaviorY =
       prevOverscrollBehavior.current;
     document.body.style.overflow = prevOverflow.current;
-    document.body.style.paddingRight = prevPaddingRight.current;
   }
 
   useEffect(() => {
@@ -449,7 +440,6 @@ export default function HeroPhotoSection({
     prevOverscrollBehavior.current =
       document.documentElement.style.overscrollBehaviorY;
     prevOverflow.current = document.body.style.overflow;
-    prevPaddingRight.current = document.body.style.paddingRight;
 
     return () => {
       unlockScroll();
@@ -542,7 +532,10 @@ export default function HeroPhotoSection({
             opacity: 1,
           }}
         >
-          <div className="relative w-full max-w-[470px] px-2 sm:px-4">
+          <div
+            className="relative w-full max-w-[470px]"
+            style={{ aspectRatio: titleImageAspectRatio }}
+          >
             {ENABLE_SCRIPT_TITLE ? (
               <div
                 className="pointer-events-none absolute inset-0 z-10"
@@ -635,7 +628,7 @@ export default function HeroPhotoSection({
 
             {mainPhotoReady && titleVideoVisible ? (
               <img
-                className="block h-auto w-full"
+                className="absolute inset-0 h-full w-full object-contain px-2 sm:px-4"
                 src={weddingTitleWebp}
                 aria-hidden="true"
                 alt=""
