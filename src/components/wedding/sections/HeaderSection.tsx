@@ -1,7 +1,7 @@
 /*
   HeaderSection: 최상단 음악 토글 버튼
 */
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Pause, Play } from "lucide-react";
 
 type HeaderSectionProps = { debugClass?: string };
@@ -10,17 +10,32 @@ export default function HeaderSection({ debugClass = "" }: HeaderSectionProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const wantsPlaybackRef = useRef(true);
+  const requestRef = useRef(0);
   const [isPlaying, setIsPlaying] = useState(false);
+
+  const playAudio = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio || !wantsPlaybackRef.current) return;
+    const request = ++requestRef.current;
+    if (audio.error) audio.load();
+    // Call directly in the gesture handler to preserve mobile user activation.
+    void audio.play().catch((error: unknown) => {
+      if (request !== requestRef.current) return;
+      setIsPlaying(false);
+      if (error instanceof DOMException && error.name === "NotAllowedError") return;
+      if (error instanceof DOMException && error.name === "AbortError") return;
+      console.warn("Background music playback failed", error);
+    });
+  }, []);
 
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
+    const requests = requestRef;
 
     const tryPlay = () => {
       if (wantsPlaybackRef.current && audio.paused) {
-        void audio.play().catch(() => {
-          // Retry after a user gesture if the browser blocks autoplay.
-        });
+        playAudio();
       }
     };
     const onInteraction = (event: Event) => {
@@ -29,6 +44,7 @@ export default function HeaderSection({ debugClass = "" }: HeaderSectionProps) {
     };
 
     const interactionEvents = [
+      "mousedown",
       "pointerdown",
       "pointerup",
       "touchend",
@@ -38,6 +54,11 @@ export default function HeaderSection({ debugClass = "" }: HeaderSectionProps) {
 
     tryPlay();
     audio.addEventListener("canplay", tryPlay);
+    const onVisible = () => {
+      if (document.visibilityState === "visible") tryPlay();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    window.addEventListener("pageshow", tryPlay);
     for (const eventName of interactionEvents) {
       document.addEventListener(eventName, onInteraction, {
         capture: true,
@@ -47,12 +68,15 @@ export default function HeaderSection({ debugClass = "" }: HeaderSectionProps) {
 
     return () => {
       audio.removeEventListener("canplay", tryPlay);
+      document.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("pageshow", tryPlay);
       for (const eventName of interactionEvents) {
         document.removeEventListener(eventName, onInteraction, true);
       }
+      ++requests.current;
       audio.pause();
     };
-  }, []);
+  }, [playAudio]);
 
   const toggleAudio = () => {
     const a = audioRef.current;
@@ -60,12 +84,11 @@ export default function HeaderSection({ debugClass = "" }: HeaderSectionProps) {
 
     if (!a.paused) {
       wantsPlaybackRef.current = false;
+      ++requestRef.current;
       a.pause();
     } else {
       wantsPlaybackRef.current = true;
-      void a.play().catch(() => {
-        setIsPlaying(false);
-      });
+      playAudio();
     }
   };
 
@@ -74,10 +97,9 @@ export default function HeaderSection({ debugClass = "" }: HeaderSectionProps) {
       <audio
         ref={audioRef}
         src={`${import.meta.env.BASE_URL}music/wedding.mp3`}
-        autoPlay
         loop
         preload="auto"
-        onPlay={() => setIsPlaying(true)}
+        onPlaying={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
         onError={() => setIsPlaying(false)}
       />
