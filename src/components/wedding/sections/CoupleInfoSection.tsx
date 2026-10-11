@@ -37,9 +37,11 @@ export default function CoupleInfoSection({
           letterSpacing: "0.02em",
         }}
       >
-        <p>때론 오래된 친구처럼</p>
-        <p>때론 처음 만나는 사람처럼</p>
-        <p>그 많은 당신을 다 사랑하고 싶습니다.</p>
+        <blockquote style={{ fontStyle: "oblique 6deg" }}>
+          <p>때론 오래된 친구처럼</p>
+          <p>때론 처음 만나는 사람처럼</p>
+          <p>그 많은 당신을 다 사랑하고 싶습니다.</p>
+        </blockquote>
 
         <p className="mt-8 text-sm" style={{ color: "#9b948b" }}>
           - 이준호, 「사랑고백」

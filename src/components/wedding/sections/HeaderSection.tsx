@@ -28,13 +28,28 @@ export default function HeaderSection({ debugClass = "" }: HeaderSectionProps) {
       tryPlay();
     };
 
+    const interactionEvents = [
+      "pointerdown",
+      "pointerup",
+      "touchend",
+      "click",
+      "keydown",
+    ];
+
     tryPlay();
-    document.addEventListener("pointerdown", onInteraction);
-    document.addEventListener("keydown", onInteraction);
+    audio.addEventListener("canplay", tryPlay);
+    for (const eventName of interactionEvents) {
+      document.addEventListener(eventName, onInteraction, {
+        capture: true,
+        passive: true,
+      });
+    }
 
     return () => {
-      document.removeEventListener("pointerdown", onInteraction);
-      document.removeEventListener("keydown", onInteraction);
+      audio.removeEventListener("canplay", tryPlay);
+      for (const eventName of interactionEvents) {
+        document.removeEventListener(eventName, onInteraction, true);
+      }
       audio.pause();
     };
   }, []);
