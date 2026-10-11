@@ -1,4 +1,8 @@
-import { useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import { Mail, X } from "lucide-react";
+import groomPhoto from "@/assets/img/어린_이세인.png";
+import bridePhoto from "@/assets/img/어린_유화진.png";
 
 type InterviewSectionProps = { debugClass?: string };
 
@@ -135,29 +139,8 @@ function SpeakerName({ speaker }: { speaker: Answer["speaker"] }) {
       : speaker === "bride"
         ? "👰🏻‍♀️ 신부 화진"
         : "🤵🏻👰🏻‍♀️ 세인과 화진";
-  const color =
-    speaker === "groom"
-      ? "text-[#53688d]"
-      : speaker === "bride"
-        ? "text-[#b06b83]"
-        : "text-[#806296]";
-
   return (
-    <div className={`mb-2 text-[14px] ${color}`}>{label}</div>
-  );
-}
-
-function Highlight({ children }: { children: React.ReactNode }) {
-  return (
-    <span
-      className="px-[2px]"
-      style={{
-        background:
-          "linear-gradient(transparent 58%, rgba(218,191,226,0.55) 58%)",
-      }}
-    >
-      {children}
-    </span>
+    <div className="mb-2 text-[14px] font-medium text-[#555]">{label}</div>
   );
 }
 
@@ -169,29 +152,25 @@ function InterviewCard({
   index: number;
 }) {
   return (
-    <article>
-      <h3 className="text-[15px] leading-7 text-[#554f58]">
-        <span className="mr-1 text-[#bd8fc7]">
+    <article className="py-8 first:pt-2">
+      <h3 className="text-[15px] font-semibold leading-7 text-[#333]">
+        <span className="mr-1">
           Q{index + 1}.
         </span>
         {item.question}
       </h3>
 
-      <div className="mt-3 rounded-[4px] bg-white px-4 py-4 shadow-[0_8px_20px_rgba(62,49,68,0.045)]">
+      <div className="mt-5">
         {item.answers.map((answer, answerIndex) => (
           <div
             key={`${answer.speaker}-${answerIndex}`}
             className={answerIndex > 0 ? "mt-6" : ""}
           >
             <SpeakerName speaker={answer.speaker} />
-            <div className="space-y-1.5 text-[15px] leading-7 tracking-[0.01em] text-[#4f4b51]">
+            <div className="space-y-1.5 text-[15px] leading-7 text-[#444]">
               {answer.lines.map((line) => (
                 <p key={line.text}>
-                  {line.highlight ? (
-                    <Highlight>{line.text}</Highlight>
-                  ) : (
-                    line.text
-                  )}
+                  {line.text}
                 </p>
               ))}
             </div>
@@ -205,62 +184,168 @@ function InterviewCard({
 export default function InterviewSection({
   debugClass = "",
 }: InterviewSectionProps) {
-  const [expanded, setExpanded] = useState(false);
-  const visibleItems = expanded ? items : items.slice(0, 3);
+  const [open, setOpen] = useState(false);
+  const [closing, setClosing] = useState(false);
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const openerRef = useRef<HTMLButtonElement>(null);
+
+  useLayoutEffect(() => {
+    if (!open) return;
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    const opener = openerRef.current;
+
+    const htmlOverflow = document.documentElement.style.overflow;
+    const scrollX = window.scrollX;
+    const scrollY = window.scrollY;
+    const bodyScrollTop = document.body.scrollTop;
+    const bodyStyle = {
+      position: document.body.style.position,
+      top: document.body.style.top,
+      left: document.body.style.left,
+      width: document.body.style.width,
+      height: document.body.style.height,
+      overflow: document.body.style.overflow,
+    };
+
+    // Keep the page visually at its original position while the dialog owns scrolling.
+    Object.assign(document.body.style, {
+      position: "fixed",
+      top: `${-scrollY}px`,
+      left: `${-scrollX}px`,
+      width: "100%",
+      height: "auto",
+      overflow: "hidden",
+    });
+    document.documentElement.style.overflow = "hidden";
+    dialog.showModal();
+    contentRef.current?.scrollTo(0, 0);
+
+    return () => {
+      dialog.close();
+      document.documentElement.style.overflow = htmlOverflow;
+      Object.assign(document.body.style, bodyStyle);
+      if (opener?.isConnected) opener.focus({ preventScroll: true });
+      document.body.scrollTop = bodyScrollTop;
+      window.scrollTo({ left: scrollX, top: scrollY, behavior: "instant" });
+    };
+  }, [open]);
+
+  useEffect(() => {
+    if (!open || !closing) return;
+    const timer = window.setTimeout(() => {
+      setOpen(false);
+      setClosing(false);
+    }, 240);
+    return () => window.clearTimeout(timer);
+  }, [open, closing]);
+
+  const closeInterview = () => setClosing(true);
 
   return (
     <section
-      className={`relative overflow-hidden bg-[#fbfaf8] px-5 py-16 ${debugClass}`}
+      className={`bg-[#fafafa] px-6 py-14 ${debugClass}`}
       style={{ fontFamily: "'Gowun Dodum', system-ui, sans-serif" }}
     >
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.32]"
-        style={{
-          backgroundImage:
-            "linear-gradient(135deg, rgba(188,153,197,0.18) 0 1px, transparent 1px), linear-gradient(45deg, rgba(218,207,191,0.2) 0 1px, transparent 1px)",
-          backgroundSize: "18px 18px",
-        }}
-      />
-
-      <div className="relative mx-auto max-w-[390px]">
+      <div className="mx-auto max-w-[390px]">
         <div className="text-center">
-          <p
-            className="text-[20px] leading-none text-[#b58cc5]"
-            style={{ fontFamily: "'WeddingSignature', cursive" }}
-          >
-            Interview
+          <p className="text-[13px] text-[#9b948b]" style={{ fontFamily: "'Elsie', serif" }}>
+            INTERVIEW
           </p>
-          <h2 className="mt-2 text-[24px] font-medium tracking-normal text-[#bd8fc7]">
-            우리에게 물었습니다
+          <h2 className="mt-3 text-[20px] font-normal text-[#333]">
+            우리 두 사람의 이야기
           </h2>
         </div>
 
-        <div className="mt-9 space-y-11">
-          {visibleItems.map((item, index) => (
-            <InterviewCard key={item.question} item={item} index={index} />
-          ))}
+        <p className="mt-8 text-center text-[15px] leading-7 text-[#777]">
+          결혼을 앞두고 저희 두 사람의
+          <br />
+          인터뷰를 준비했습니다.
+        </p>
+
+        <div className="mt-8 grid grid-cols-2 gap-3">
+          <img
+            src={groomPhoto}
+            alt="신랑 이세인의 어린 시절"
+            loading="lazy"
+            className="aspect-square w-full rounded-[6px] object-cover"
+          />
+          <img
+            src={bridePhoto}
+            alt="신부 유화진의 어린 시절"
+            loading="lazy"
+            className="aspect-square w-full rounded-[6px] object-cover"
+          />
         </div>
 
         <div className="mt-8 flex justify-center">
           <button
+            ref={openerRef}
             type="button"
-            onClick={() => setExpanded((current) => !current)}
-            className="inline-flex h-10 items-center gap-2 px-4 text-[14px] text-[#4b464d] transition-opacity hover:opacity-70"
-            aria-expanded={expanded}
+            onClick={() => setOpen(true)}
+            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-[8px] border border-[#e8e8e8] bg-white px-5 py-3 text-[14px] text-[#555] transition-colors hover:bg-[#f2f2f2] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#9b948b]"
+            aria-haspopup="dialog"
+            aria-controls="wedding-interview"
           >
-            <span>{expanded ? "접기" : "더보기"}</span>
-            <span
-              aria-hidden
-              className="text-[18px] leading-none transition-transform"
-              style={{
-                transform: expanded ? "rotate(180deg)" : "rotate(0deg)",
-              }}
-            >
-              ˅
-            </span>
+            <Mail size={16} className="shrink-0 text-[#999]" aria-hidden="true" />
+            <span>신랑 &amp; 신부의 인터뷰 읽어보기</span>
           </button>
         </div>
       </div>
+
+      {createPortal(
+        <dialog
+          ref={dialogRef}
+          id="wedding-interview"
+          aria-labelledby="wedding-interview-title"
+          data-closing={closing}
+          className="wedding-interview-dialog fixed inset-0 m-auto h-[100dvh] max-h-[100dvh] w-full max-w-[430px] overflow-hidden border-0 bg-[#fafafa] p-0 text-[#333] backdrop:bg-black/40"
+          style={{ fontFamily: "'Gowun Dodum', system-ui, sans-serif" }}
+          onCancel={(event) => {
+            event.preventDefault();
+            closeInterview();
+          }}
+          onClick={(event) => {
+            if (event.target !== event.currentTarget) return;
+            const rect = event.currentTarget.getBoundingClientRect();
+            if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) {
+              closeInterview();
+            }
+          }}
+          onAnimationEnd={(event) => {
+            if (event.target === event.currentTarget && closing) {
+              setOpen(false);
+              setClosing(false);
+            }
+          }}
+        >
+          <div className="flex h-full flex-col">
+            <header className="relative flex min-h-16 shrink-0 items-center justify-center border-b border-[#ededed] px-14">
+              <h2 id="wedding-interview-title" className="text-center text-[18px] font-normal">
+                우리 두 사람의 이야기
+              </h2>
+              <button
+                type="button"
+                onClick={closeInterview}
+                aria-label="인터뷰 닫기"
+                title="닫기"
+                className="absolute right-3 top-3 flex h-10 w-10 items-center justify-center rounded-full hover:bg-black/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#9b948b]"
+              >
+                <X size={20} aria-hidden="true" />
+              </button>
+            </header>
+            <div ref={contentRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain break-keep px-7 pb-8 pt-5">
+              <div className="divide-y divide-[#dedede]">
+                {items.map((item, index) => (
+                  <InterviewCard key={item.question} item={item} index={index} />
+                ))}
+              </div>
+            </div>
+          </div>
+        </dialog>,
+        document.body,
+      )}
     </section>
   );
 }

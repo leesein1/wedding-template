@@ -9,7 +9,7 @@ import {
   AboutUsSection,
   CalendarSection,
   CoupleInfoSection,
-  DateTitleSection,
+  // DateTitleSection,
   GallerySection,
   HeaderSection,
   HeroPhotoSection,
@@ -58,7 +58,7 @@ export default function MainWedding() {
   const revealedSections = [
     { Component: CoupleInfoSection, delay: 0 },
     { Component: WelcomeMessageSection, delay: 40 },
-    { Component: DateTitleSection, delay: 60 },
+    //{ Component: DateTitleSection, delay: 60 },
     { Component: CalendarSection, delay: 80 },
     { Component: AboutUsSection, delay: 100 },
     // { Component: TimelineSection, delay: 120 },

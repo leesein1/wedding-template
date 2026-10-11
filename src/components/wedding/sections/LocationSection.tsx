@@ -30,42 +30,57 @@ declare global {
 type LocationSectionProps = { debugClass?: string };
 
 const VENUE = {
-  name: "부평역 그레이스파티",
+  name: "그레이스파티 인천점",
   address: "인천 부평구 광장로 16",
   lat: 37.4896,
   lng: 126.7248,
 };
 
 const GUIDE = {
-  car: {
-    title: "자차",
+  location: {
+    title: "찾아오시는 길",
     lines: [
-      "내비게이션 : '부평역 그레이스파티' 검색",
-      "인천 부평구 광장로 16 부평역 그레이스파티",
+      "인천 부평구 광장로 16",
+      "부평역사쇼핑몰 5층 그레이스파티 인천점"
     ],
   },
   bus: {
     title: "버스",
     items: [
-      { badge: "예시", lines: ["부평역 정류장 하차", "도보 ○분"] },
-      { badge: "예시", lines: ["부평역(지하상가) 하차", "○○ 방향 → 도보 ○분"] },
+      {
+        badge: "파랑(간선)",
+        lines: ["1, 2, 10, 11, 12, 23, 24-1, 30, 34, 35, 40"],
+      },
+      {
+        badge: "초록(지선)",
+        lines: ["551, 552, 555, 556, 557, 558, 560, 561"],
+      },
     ],
   },
   subway: {
     title: "지하철",
     items: [
-      { badge: "1호선", lines: ["부평역 하차", "○번 출구 → 도보 ○분"] },
-      { badge: "인천1호선", lines: ["부평역 하차", "○번 출구 → 도보 ○분"] },
-    ],
+      { badge: "1호선 · 인천 1호선", lines: ["부평역 하차"] }
+    ]
   },
   parking: {
-    title: "주차",
+    title: "주차 안내",
     lines: [
-      "주차 : 건물 내/인근 주차장 이용",
-      "하객 주차 지원 : ○시간 무료 (예식장 안내 기준)",
-      "주차 현장 주차 요원 안내를 받아주세요.",
+      {
+        label: "역사 주차장:",
+        text: "부평역 광장 우측 대아골프랜드 주차장",
+      },
+      {
+        label: "롯데마트 주차장:",
+        text: "부평역 광장 좌측 롯데마트 주차장",
+      },
+      {
+        label: "",
+        text: "웨딩홀에서 '주차 확인'을 받아가세요. (2시간 무료)",
+      },
     ],
   },
+  notice: "※ 교통이 혼잡하오니 대중교통을 이용하시면 편리합니다.",
 };
 
 function Icon({
@@ -86,29 +101,20 @@ function Icon({
   );
 }
 
-function CarIcon() {
+function PinIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
       <path
-        d="M3.5 14.5v-3.2c0-.8.5-1.5 1.3-1.8l2.7-1 1.5-3.1c.3-.6.9-1 1.6-1h6.8c.7 0 1.3.4 1.6 1l1.5 3.1 2.7 1c.8.3 1.3 1 1.3 1.8v3.2"
+        d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z"
         stroke="currentColor"
         strokeWidth="1.7"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <path
-        d="M6.5 14.5h11"
-        stroke="currentColor"
-        strokeWidth="1.7"
-        strokeLinecap="round"
-      />
-      <path
-        d="M6.8 18.8a1.6 1.6 0 1 0 0-3.2 1.6 1.6 0 0 0 0 3.2ZM17.2 18.8a1.6 1.6 0 1 0 0-3.2 1.6 1.6 0 0 0 0 3.2Z"
-        stroke="currentColor"
-        strokeWidth="1.7"
-      />
-      <path
-        d="M3.5 14.5v2.1c0 .9.7 1.6 1.6 1.6h1.2M19.1 18.2h1.2c.9 0 1.6-.7 1.6-1.6v-2.1"
+      <circle
+        cx="12"
+        cy="10"
+        r="3"
         stroke="currentColor"
         strokeWidth="1.7"
         strokeLinecap="round"
@@ -356,15 +362,19 @@ export default function LocationSection({
           <div className="rounded-2xl border border-[#efefef] bg-[#fcfcfc] p-4 shadow-[0_14px_26px_rgba(0,0,0,0.05)]">
             <GuideHeader
               icon={
-                <Icon label="car">
-                  <CarIcon />
+                <Icon label="식장 위치">
+                  <PinIcon />
                 </Icon>
               }
-              title={GUIDE.car.title}
+              title={GUIDE.location.title}
             />
             <div className="mt-3 space-y-1 text-[#444]">
-              {GUIDE.car.lines.map((t, i) => (
-                <p key={i}>{t}</p>
+              {GUIDE.location.lines.map((t, i) => (
+                <p key={i}>
+                  {t === "부평역사쇼핑몰 5층 그레이스파티 인천점" ? (
+                    <strong className="font-bold">{t}</strong>
+                  ) : t}
+                </p>
               ))}
             </div>
           </div>
@@ -401,11 +411,13 @@ export default function LocationSection({
               }
               title={GUIDE.subway.title}
             />
-            <div className="mt-3 space-y-4 text-[#444]">
+            <div className="mt-3 space-y-2 text-[#444]">
               {GUIDE.subway.items.map((it, idx) => (
-                <div key={idx} className="space-y-1">
-                  <Badge text={it.badge} />
-                  <div className="mt-2 space-y-1">
+                <div key={idx} className="flex items-center gap-2">
+                  <span className="shrink-0">
+                    <Badge text={it.badge} />
+                  </span>
+                  <div className="min-w-0 space-y-1">
                     {it.lines.map((t, i) => (
                       <p key={i}>{t}</p>
                     ))}
@@ -425,12 +437,21 @@ export default function LocationSection({
               title={GUIDE.parking.title}
             />
             <div className="mt-3 space-y-1 text-[#444]">
-              {GUIDE.parking.lines.map((t, i) => (
-                <p key={i}>{t}</p>
+              {GUIDE.parking.lines.map((line, i) => (
+                <p key={i} className={line.label ? undefined : "pt-[1.625em]"}>
+                  {line.label ? (
+                    <><strong className="font-bold">{line.label}</strong>{" "}</>
+                  ) : null}
+                  {line.text}
+                </p>
               ))}
             </div>
           </div>
         </div>
+
+        <p className="mt-6 text-[12px] font-bold leading-relaxed text-[#6b6b6b]">
+          {GUIDE.notice}
+        </p>
 
         <div className="h-2" />
       </div>

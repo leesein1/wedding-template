@@ -1,5 +1,5 @@
 /*
-  CoupleInfoSection: 신랑/신부 간단 소개 (리본 + 텍스트)
+  CoupleInfoSection: 신랑/신부 간단 소개
 */
 type CoupleInfoSectionProps = {
   debugClass?: string;
@@ -10,39 +10,24 @@ export default function CoupleInfoSection({
 }: CoupleInfoSectionProps) {
   return (
     <section className={`px-8 py-16 text-center ${debugClass}`}>
-      {/* 🎀 리본 */}
-      <div className="flex justify-center mb-10">
-        <svg
-          width="72"
-          height="42"
-          viewBox="0 0 120 70"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="
-              M60 35
-              C 50 22, 30 18, 20 30
-              C 12 40, 24 50, 38 44
-              C 50 39, 54 36, 60 35
-
-              C 66 36, 70 39, 82 44
-              C 96 50, 108 40, 100 30
-              C 90 18, 70 22, 60 35
-
-              M38 44
-              C 44 52, 52 55, 60 48
-
-              M82 44
-              C 76 52, 68 55, 60 48
-            "
-            fill="none"
-            stroke="#b5a99a"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
+      {/*
+      <div aria-hidden="true" className="mb-10 flex h-6 items-center justify-center gap-3">
+        <span className="h-1 w-1 rounded-full bg-[#b5a99a]" />
+        <span className="h-1 w-1 rounded-full bg-[#b5a99a]" />
+        <span className="h-1 w-1 rounded-full bg-[#b5a99a]" />
       </div>
+      */}
+      <h2
+        aria-label="INVITATION"
+        className="mb-10 text-[13px] leading-6 text-[#9b948b]"
+        style={{ fontFamily: "'Elsie', serif" }}
+      >
+        <span aria-hidden="true" className="inline-flex gap-[1.5px]">
+          {"INVITATION".split("").map((letter, index) => (
+            <span key={index}>{letter}</span>
+          ))}
+        </span>
+      </h2>
 
       {/* 📜 시 */}
       <div
@@ -52,13 +37,12 @@ export default function CoupleInfoSection({
           letterSpacing: "0.02em",
         }}
       >
-        <p>사람이 온다는 건 실은 어마어마한 일이다.</p>
-        <p className="mt-5">그는 그의 과거와 현재와 그리고</p>
-        <p>그의 미래와 함께 오기 때문이다.</p>
-        <p className="mt-5">한 사람의 일생이 오기 때문이다.</p>
+        <p>때론 오래된 친구처럼</p>
+        <p>때론 처음 만나는 사람처럼</p>
+        <p>그 많은 당신을 다 사랑하고 싶습니다.</p>
 
         <p className="mt-8 text-sm" style={{ color: "#9b948b" }}>
-          - 정현종, 「방문객」
+          - 이준호, 「사랑고백」
         </p>
       </div>
 

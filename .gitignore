@@ -7,6 +7,10 @@ dist-ssr/
 build/
 coverage/
 
+# Background music (include the default track for deployment)
+*.mp3
+!/public/music/wedding.mp3
+
 # Logs
 logs/
 *.log

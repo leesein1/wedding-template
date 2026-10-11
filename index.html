@@ -12,10 +12,6 @@
       type="image/webp"
     />
     <style>
-      html {
-        scrollbar-gutter: stable both-edges;
-      }
-
       html,
       body,
       #root {
@@ -56,7 +52,7 @@
       #initial-cover .initial-cover-frame::before {
         content: "";
         position: absolute;
-        inset: 0;
+        inset: -12px;
         background: url("%BASE_URL%hero-main.webp") center / cover no-repeat;
         filter: blur(3px) brightness(0.58);
         transform: scale(1.035);

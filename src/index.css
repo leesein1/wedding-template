@@ -48,6 +48,33 @@ body {
   overflow-x: hidden;
 }
 
+.wedding-interview-dialog[open],
+.wedding-interview-dialog[open]::backdrop {
+  animation: weddingDialogFadeIn 220ms ease both;
+}
+
+.wedding-interview-dialog[open][data-closing="true"],
+.wedding-interview-dialog[open][data-closing="true"]::backdrop {
+  animation-name: weddingDialogFadeOut;
+}
+
+@keyframes weddingDialogFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes weddingDialogFadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wedding-interview-dialog[open],
+  .wedding-interview-dialog[open]::backdrop {
+    animation-duration: 1ms;
+  }
+}
+
 /* ===== 오디오 바 애니메이션 ===== */
 
 .bar {

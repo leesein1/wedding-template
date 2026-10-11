@@ -66,14 +66,31 @@ function ChevronIcon({ open }: { open: boolean }) {
   );
 }
 
+/*
 function PayBadge() {
   return (
-    <span className="inline-flex items-center gap-1 text-[#2a2a2a]">
-      <span className="inline-block h-[14px] w-[14px] rounded-[4px] bg-[#2a2a2a] opacity-15" />
+    <span aria-label="카카오페이" className="inline-flex items-center gap-1 text-[#2a2a2a]">
+      <svg
+        width="14"
+        height="14"
+        viewBox="0 0 18 18"
+        fill="none"
+        aria-hidden="true"
+        className="shrink-0"
+      >
+        <path
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M8.98133 1.42529C4.46641 1.42529 0.809692 4.29843 0.809692 7.88052C0.809692 10.1566 2.33954 12.1716 4.61566 13.3283L3.83208 16.2387C3.79477 16.3134 3.83208 16.4253 3.90671 16.4999C3.94402 16.5372 4.01865 16.5745 4.05596 16.5745C4.09327 16.5745 4.1679 16.5372 4.20521 16.5372L7.52611 14.2984C8.01119 14.3731 8.49626 14.4104 9.01865 14.4104C13.5336 14.4104 17.1903 11.4999 17.1903 7.95514C17.1903 4.29843 13.5336 1.42529 8.98133 1.42529Z"
+          fill="currentColor"
+        />
+      </svg>
       <span className="text-[13px] font-semibold">pay</span>
     </span>
   );
 }
+
+*/
 
 async function copyToClipboard(text: string) {
   try {
@@ -136,7 +153,7 @@ function AccountCard({ item }: { item: AccountItem }) {
               </span>
             </button>
 
-            {item.pay === "kakaopay" ? <PayBadge /> : null}
+            {/* {item.pay === "kakaopay" ? <PayBadge /> : null} */}
           </div>
         </div>
       </div>
@@ -218,25 +235,25 @@ export default function AccountSection({
       {
         side: "bride",
         roleLabel: "신부",
-        ownerName: "김화진",
-        bankName: "토그은행",
-        accountNo: "987-654-321000",
+        ownerName: "유화진",
+        bankName: "KB 국민은행",
+        accountNo: "20130204171884",
         pay: "kakaopay",
       },
       {
         side: "bride",
         roleLabel: "신부 아버지",
-        ownerName: "김OO",
-        bankName: "토그은행",
-        accountNo: "987-654-321000",
+        ownerName: "김영섭",
+        bankName: "우체국",
+        accountNo: "110007770647",
         pay: "kakaopay",
       },
       {
         side: "bride",
         roleLabel: "신부 어머니",
-        ownerName: "박OO",
-        bankName: "토그은행",
-        accountNo: "987-654-321000",
+        ownerName: "박시자",
+        bankName: "새마을금고",
+        accountNo: "9003284307959",
         pay: "kakaopay",
       },
     ],
