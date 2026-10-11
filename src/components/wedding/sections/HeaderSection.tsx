@@ -16,6 +16,7 @@ export default function HeaderSection({ debugClass = "" }: HeaderSectionProps) {
   const playAudio = useCallback(() => {
     const audio = audioRef.current;
     if (!audio || !wantsPlaybackRef.current) return;
+    audio.volume = 0.6;
     const request = ++requestRef.current;
     if (audio.error) audio.load();
     // Call directly in the gesture handler to preserve mobile user activation.
