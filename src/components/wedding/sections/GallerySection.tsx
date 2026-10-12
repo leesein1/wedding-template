@@ -295,8 +295,7 @@ export default function GallerySection({
   const images = useMemo(() => [g1, g2, g3, g4, g5], []);
   const [index, setIndex] = useState(0);
 
-  // ✅ 시작은 1번(재생) = paused false
-  const [paused, setPaused] = useState(false);
+  const [paused, setPaused] = useState(true);
 
   const len = images.length;
 
