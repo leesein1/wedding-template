@@ -97,20 +97,6 @@ export default function CalendarSection({
     return fmt.format(target).replace(":00", "");
   }, [target]);
 
-  const enDateLine = useMemo(() => {
-    const fmt = new Intl.DateTimeFormat("en-US", {
-      weekday: "long",
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
-      timeZone: "Asia/Seoul",
-    });
-    return fmt.format(target).replace(":00", "");
-  }, [target]);
-
   return (
     <section className={`px-6 py-10 bg-white ${debugClass}`}>
       <div className="max-w-[420px] mx-auto">
@@ -126,7 +112,6 @@ export default function CalendarSection({
           <div className="mt-5 text-[14px] text-[#3a3a3a] mb-2">
             {koDateLine}시
           </div>
-          <div className="mt-1 text-[15px] text-[#9a9a9a]">{enDateLine}</div>
 
           <div className="mt-8 h-px bg-[#e7e7e7]" />
         </div>
@@ -207,7 +192,7 @@ export default function CalendarSection({
             <span>오늘이 결혼식 당일입니다 🤍</span>
           ) : (
             <span>
-              세인❤화진 결혼식이 <b className="font-semibold">{cd.days}</b>일
+              결혼식이 <b className="font-semibold">{cd.days}</b>일
               남았습니다
             </span>
           )}

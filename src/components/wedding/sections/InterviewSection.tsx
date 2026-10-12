@@ -22,20 +22,14 @@ type InterviewItem = {
 
 const items: InterviewItem[] = [
   {
-    question: "처음 만났을 때 서로의 첫인상은?",
+    question: "두 사람의 인연은 언제부터 시작되었나요?",
     answers: [
       {
-        speaker: "groom",
+        speaker: "both",
         lines: [
-          { text: "웃는 얼굴이 오래 기억에 남았어요.", highlight: true },
-          { text: "조용한 듯 다정하고, 대화할수록 편안한 사람이었습니다." },
-        ],
-      },
-      {
-        speaker: "bride",
-        lines: [
-          { text: "말투가 참 따뜻하다고 느꼈어요.", highlight: true },
-          { text: "작은 이야기도 잘 들어주는 모습이 좋았습니다." },
+          { text: "사실 저희의 인연은 아주 오래전, 유치원 시절부터 시작되었습니다." },
+          { text: "함께 찍은 사진도 남아 있지만,\n정작 그때의 기억은 서로 희미합니다." },
+          { text: "어린 시절 스쳐 지나간 인연이 시간이 흘러 다시 만나,\n평생을 함께할 인연이 되었습니다." },
         ],
       },
     ],
@@ -46,21 +40,15 @@ const items: InterviewItem[] = [
       {
         speaker: "groom",
         lines: [
-          { text: "특별한 하루보다 평범한 날들이 좋았어요." },
-          {
-            text: "오래 함께하고 싶다는 생각이 자연스럽게 들었습니다.",
-            highlight: true,
-          },
+          { text: "늘 겁이 많고 도전을 망설이던 저에게\n화진이는 한 걸음 나아갈 용기를 줬어요." },
+          { text: "이 사람과 함께라면 더 나은 사람이 되고,\n더 열심히 살아갈 수 있겠다는 확신이 들었어요." },
         ],
       },
       {
         speaker: "bride",
         lines: [
-          { text: "힘든 날에도 제 편이 되어주는 마음이 고마웠어요." },
-          {
-            text: "조용하고 단단한 하루들을 만들 수 있겠다고 확신했습니다.",
-            highlight: true,
-          },
+          { text: "함께할수록 마음이 편안해지고, 어떤 순간에도\n나의 든든한 편이 되어줄 수 있겠다는 확신이 들었습니다." },
+          { text: "앞으로의 날들도 안정감을 주는 든든한 울타리같은 느낌이었달까요!" },
         ],
       },
     ],
@@ -71,33 +59,15 @@ const items: InterviewItem[] = [
       {
         speaker: "groom",
         lines: [
-          { text: "제 속도보다 조금 느린 날에도 기다려줘요." },
-          {
-            text: "그 배려 덕분에 더 좋은 사람이 되고 싶어졌습니다.",
-            highlight: true,
-          },
+          { text: "평범한 하루를 행복으로 채워주고, 힘들고 지치는 순간에도 언젠 든든한 내 편이 되어주는 것." },
+          { text: "언제나 함께 웃고 서로에게 힘이 되어주는 것이 가장 고맙습니다." },
         ],
       },
       {
         speaker: "bride",
         lines: [
-          { text: "늘 먼저 손 내밀어주는 사람이에요.", highlight: true },
-          { text: "작은 일상에 안심을 만들어줘서 고맙습니다." },
-        ],
-      },
-    ],
-  },
-  {
-    question: "우리가 닮아가고 있다고 느끼는 순간은?",
-    answers: [
-      {
-        speaker: "both",
-        lines: [
-          {
-            text: "같은 장면에서 웃고, 같은 메뉴를 떠올릴 때요.",
-            highlight: true,
-          },
-          { text: "서로의 말버릇과 취향이 자연스럽게 스며드는 중입니다." },
+          { text: "우리의 일은 물론, 제 개인적인 일에도 늘 자기 일처럼\n발 벗고 나서서 함께해 주는 점이 가장 고마워요." },
+          { text: "언제나 든든하게 제 곁을 지켜주고,\n무슨 일이든 함께 고민하고 해결해 주려는 모습에\n큰 의지가 됩니다." },
         ],
       },
     ],
@@ -108,11 +78,8 @@ const items: InterviewItem[] = [
       {
         speaker: "both",
         lines: [
-          { text: "따뜻한 햇살이 있는 곳으로 천천히 다녀오려고 해요." },
-          {
-            text: "맛있는 것 많이 먹고, 사진도 많이 남기고 오겠습니다.",
-            highlight: true,
-          },
+          { text: "물을 좋아하는 저희는 아름다운 바다가 있는\n칸쿤에서 여유로운 시간을 보내고," },
+          { text: "신랑이 가장 좋아하는 농구팀이 있는\nLA에서도 즐거운 여행을 할 예정입니다!" },
         ],
       },
     ],
@@ -132,14 +99,18 @@ const items: InterviewItem[] = [
 ];
 
 function SpeakerName({ speaker }: { speaker: Answer["speaker"] }) {
+  const emoji = speaker === "groom" ? "🤵🏻" : speaker === "bride" ? "👰🏻‍♀️" : "🤵🏻👰🏻‍♀️";
   const label =
     speaker === "groom"
-      ? "🤵🏻 신랑 세인"
+      ? "신랑 세인"
       : speaker === "bride"
-        ? "👰🏻‍♀️ 신부 화진"
-        : "🤵🏻👰🏻‍♀️ 세인과 화진";
+        ? "신부 화진"
+        : "세인과 화진";
   return (
-    <div className="mb-2 text-[14px] font-medium text-[#555]">{label}</div>
+    <div className="mb-3 flex items-center gap-2 text-[14px] text-[#333]">
+      <span aria-hidden="true" className="shrink-0">{emoji}</span>
+      <strong className="font-bold">{label}</strong>
+    </div>
   );
 }
 
@@ -152,7 +123,7 @@ function InterviewCard({
 }) {
   return (
     <article className="py-8 first:pt-2">
-      <h3 className="text-[15px] font-semibold leading-7 text-[#333]">
+      <h3 className="text-[15px] font-semibold leading-7 text-[#333]" style={{ textWrap: "pretty" }}>
         <span className="mr-1">
           Q{index + 1}.
         </span>
@@ -163,12 +134,12 @@ function InterviewCard({
         {item.answers.map((answer, answerIndex) => (
           <div
             key={`${answer.speaker}-${answerIndex}`}
-            className={answerIndex > 0 ? "mt-6" : ""}
+            className={answerIndex > 0 ? "mt-8" : ""}
           >
             <SpeakerName speaker={answer.speaker} />
-            <div className="space-y-1.5 text-[15px] leading-7 text-[#444]">
+            <div className="space-y-3 text-[15px] leading-7 text-[#444]" style={{ textWrap: "pretty" }}>
               {answer.lines.map((line) => (
-                <p key={line.text}>
+                <p key={line.text} className="whitespace-pre-line">
                   {line.text}
                 </p>
               ))}
