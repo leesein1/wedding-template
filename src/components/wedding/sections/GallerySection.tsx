@@ -154,6 +154,10 @@ function PeekSlider({
   // 드래그 상태
   const draggingRef = useRef(false);
   const startXRef = useRef(0);
+  const startYRef = useRef(0);
+  const pointerIdRef = useRef<number | null>(null);
+  const directionRef = useRef<"horizontal" | "vertical" | null>(null);
+  const dragDxRef = useRef(0);
 
   const [dragDx, setDragDx] = useState(0);
   const [noAnim, setNoAnim] = useState(false);
@@ -181,64 +185,80 @@ function PeekSlider({
     if (len <= 1) return;
     draggingRef.current = true;
     startXRef.current = clientX;
+    dragDxRef.current = 0;
     setNoAnim(true);
   };
 
   const moveDrag = (clientX: number) => {
     if (!draggingRef.current) return;
     const dx = clientX - startXRef.current;
+    dragDxRef.current = dx;
     setDragDx(dx);
   };
 
-  const endDrag = () => {
+  const endDrag = (cancelled = false) => {
     if (!draggingRef.current) return;
     draggingRef.current = false;
 
     const threshold = Math.max(40, slideW * 0.15);
-    const dx = dragDx;
+    const dx = dragDxRef.current;
 
     setNoAnim(false);
     setDragDx(0);
 
-    if (Math.abs(dx) < threshold) return;
+    if (cancelled || Math.abs(dx) < threshold) return;
     if (dx > 0) onChange(clampIndex(index - 1, len));
     else onChange(clampIndex(index + 1, len));
   };
 
-  // 마우스
-  const onMouseDown = (e: React.MouseEvent) => {
-    e.preventDefault();
+  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!e.isPrimary || e.button !== 0 || len <= 1) return;
+    if ((e.target as HTMLElement).closest("button")) return;
+    pointerIdRef.current = e.pointerId;
+    startYRef.current = e.clientY;
+    directionRef.current = e.pointerType === "mouse" ? "horizontal" : null;
+    e.currentTarget.setPointerCapture(e.pointerId);
     beginDrag(e.clientX);
   };
 
-  useEffect(() => {
-    const onMove = (e: MouseEvent) => moveDrag(e.clientX);
-    const onUp = () => endDrag();
-
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("mouseup", onUp);
-    return () => {
-      window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("mouseup", onUp);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [index, slideW, len, dragDx]);
-
-  // 터치
-  const onTouchStart = (e: React.TouchEvent) => {
-    const x = e.touches[0]?.clientX;
-    if (x == null) return;
-    beginDrag(x);
+  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (pointerIdRef.current !== e.pointerId) return;
+    if (!directionRef.current) {
+      const dx = Math.abs(e.clientX - startXRef.current);
+      const dy = Math.abs(e.clientY - startYRef.current);
+      if (Math.max(dx, dy) < 8) return;
+      directionRef.current = dx >= dy ? "horizontal" : "vertical";
+    }
+    if (directionRef.current === "horizontal") moveDrag(e.clientX);
   };
-  const onTouchMove = (e: React.TouchEvent) => {
-    const x = e.touches[0]?.clientX;
-    if (x == null) return;
-    moveDrag(x);
+
+  const finishPointer = (e: React.PointerEvent<HTMLDivElement>, cancelled = false) => {
+    if (pointerIdRef.current !== e.pointerId) return;
+    endDrag(cancelled || directionRef.current !== "horizontal");
+    pointerIdRef.current = null;
+    directionRef.current = null;
+    if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    }
   };
-  const onTouchEnd = () => endDrag();
 
   return (
-    <div ref={wrapRef} className="relative overflow-hidden select-none">
+    <div
+      ref={wrapRef}
+      className="relative overflow-hidden select-none"
+      style={{ touchAction: "pan-y pinch-zoom" }}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={(e) => finishPointer(e)}
+      onPointerCancel={(e) => finishPointer(e, true)}
+      onLostPointerCapture={(e) => finishPointer(e, true)}
+    >
+      {/* Touch behavior must be set before a gesture starts. */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-x-0 top-[15%] bottom-[15%] z-10 cursor-grab active:cursor-grabbing"
+        style={{ touchAction: "pinch-zoom" }}
+      />
       <ArrowBtn
         dir="left"
         onClick={() => onChange(clampIndex(index - 1, len))}
@@ -250,10 +270,6 @@ function PeekSlider({
 
       <div
         className="flex cursor-grab active:cursor-grabbing"
-        onMouseDown={onMouseDown}
-        onTouchStart={onTouchStart}
-        onTouchMove={onTouchMove}
-        onTouchEnd={onTouchEnd}
         style={{
           gap: `${gapPx}px`,
           transform: `translateX(${translateX}px)`,
