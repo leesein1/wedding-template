@@ -11,14 +11,14 @@ type RevealProps = {
 export default function Reveal({
   children,
   className = "",
-  once = false,
+  once = true,
   delayMs = 0,
 }: RevealProps) {
   const { ref, isVisible } = useRevealOnScroll({ once });
 
   return (
     <section
-      ref={ref as any}
+      ref={ref}
       className={className}
       style={{
         opacity: isVisible ? 1 : 0,

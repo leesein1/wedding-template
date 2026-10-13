@@ -491,7 +491,7 @@ export default function HeroPhotoSection({
       style={{
         fontFamily: systemFont,
         height: lockedViewportHeight ? `${lockedViewportHeight}px` : "100svh",
-        minHeight: "100svh",
+        minHeight: lockedViewportHeight ? `${lockedViewportHeight}px` : "100svh",
       }}
     >
       {/* 배경 */}
