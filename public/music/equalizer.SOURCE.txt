@@ -1,0 +1,5 @@
+SVG Spinners - bars-scale-middle (SMIL)
+Author: Utkarsh Verma
+Source: https://github.com/n3r4zzurr0/svg-spinners
+Original asset: https://github.com/n3r4zzurr0/svg-spinners/blob/main/svg-smil/bars-scale-middle.svg
+License: MIT (see equalizer.LICENSE.txt)

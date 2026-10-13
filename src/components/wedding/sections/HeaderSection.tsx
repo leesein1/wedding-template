@@ -1,8 +1,5 @@
-/*
-  HeaderSection: 최상단 음악 토글 버튼
-*/
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Pause, Play } from "lucide-react";
+import { Play } from "lucide-react";
 
 type HeaderSectionProps = { debugClass?: string };
 
@@ -12,26 +9,40 @@ export default function HeaderSection({ debugClass = "" }: HeaderSectionProps) {
   const wantsPlaybackRef = useRef(true);
   const requestRef = useRef(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isStarting, setIsStarting] = useState(false);
 
   const playAudio = useCallback(() => {
     const audio = audioRef.current;
     if (!audio || !wantsPlaybackRef.current) return;
+
     audio.volume = 0.6;
     const request = ++requestRef.current;
+
     if (audio.error) audio.load();
-    // Call directly in the gesture handler to preserve mobile user activation.
-    void audio.play().catch((error: unknown) => {
-      if (request !== requestRef.current) return;
-      setIsPlaying(false);
-      if (error instanceof DOMException && error.name === "NotAllowedError") return;
-      if (error instanceof DOMException && error.name === "AbortError") return;
-      console.warn("Background music playback failed", error);
-    });
+    setIsStarting(true);
+
+    void audio
+      .play()
+      .then(() => {
+        if (request === requestRef.current) setIsStarting(false);
+      })
+      .catch((error: unknown) => {
+        if (request !== requestRef.current) return;
+
+        setIsPlaying(false);
+        setIsStarting(false);
+
+        if (error instanceof DOMException && error.name === "NotAllowedError") return;
+        if (error instanceof DOMException && error.name === "AbortError") return;
+
+        console.warn("Background music playback failed", error);
+      });
   }, []);
 
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
+
     const requests = requestRef;
 
     const tryPlay = () => {
@@ -39,6 +50,7 @@ export default function HeaderSection({ debugClass = "" }: HeaderSectionProps) {
         playAudio();
       }
     };
+
     const onInteraction = (event: Event) => {
       if (event.target instanceof Node && buttonRef.current?.contains(event.target)) return;
       tryPlay();
@@ -55,11 +67,14 @@ export default function HeaderSection({ debugClass = "" }: HeaderSectionProps) {
 
     tryPlay();
     audio.addEventListener("canplay", tryPlay);
+
     const onVisible = () => {
       if (document.visibilityState === "visible") tryPlay();
     };
+
     document.addEventListener("visibilitychange", onVisible);
     window.addEventListener("pageshow", tryPlay);
+
     for (const eventName of interactionEvents) {
       document.addEventListener(eventName, onInteraction, {
         capture: true,
@@ -71,27 +86,33 @@ export default function HeaderSection({ debugClass = "" }: HeaderSectionProps) {
       audio.removeEventListener("canplay", tryPlay);
       document.removeEventListener("visibilitychange", onVisible);
       window.removeEventListener("pageshow", tryPlay);
+
       for (const eventName of interactionEvents) {
         document.removeEventListener(eventName, onInteraction, true);
       }
+
       ++requests.current;
       audio.pause();
     };
   }, [playAudio]);
 
   const toggleAudio = () => {
-    const a = audioRef.current;
-    if (!a) return;
+    const audio = audioRef.current;
+    if (!audio) return;
 
-    if (!a.paused) {
+    if (!audio.paused) {
       wantsPlaybackRef.current = false;
       ++requestRef.current;
-      a.pause();
+      audio.pause();
+      audio.currentTime = 0;
+      setIsStarting(false);
     } else {
       wantsPlaybackRef.current = true;
       playAudio();
     }
   };
+
+  const isActive = isPlaying || isStarting;
 
   return (
     <div className={debugClass}>
@@ -100,24 +121,41 @@ export default function HeaderSection({ debugClass = "" }: HeaderSectionProps) {
         src={`${import.meta.env.BASE_URL}music/wedding.mp3`}
         loop
         preload="auto"
-        onPlaying={() => setIsPlaying(true)}
-        onPause={() => setIsPlaying(false)}
-        onError={() => setIsPlaying(false)}
+        onPlaying={() => {
+          setIsPlaying(true);
+          setIsStarting(false);
+        }}
+        onPause={() => {
+          setIsPlaying(false);
+          setIsStarting(false);
+        }}
+        onError={() => {
+          setIsPlaying(false);
+          setIsStarting(false);
+        }}
       />
 
       <button
         ref={buttonRef}
         type="button"
         onClick={toggleAudio}
-        className="absolute right-4 top-4 z-50 flex h-10 w-10 items-center justify-center rounded-full bg-black/15 text-white transition-colors hover:bg-black/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-        aria-label={isPlaying ? "배경음악 일시정지" : "배경음악 재생"}
-        aria-pressed={isPlaying}
-        title={isPlaying ? "배경음악 일시정지" : "배경음악 재생"}
+        className="fixed right-4 top-4 z-50 flex h-6 w-8 items-center justify-center rounded-full bg-neutral-500/45 text-white backdrop-blur-sm transition-colors hover:bg-neutral-500/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-500 min-[431px]:right-[max(1rem,calc((100vw-430px)/2+1rem))]"
+        aria-label={isActive ? "배경음악 정지" : "배경음악 재생"}
+        aria-pressed={isActive}
+        aria-busy={isStarting}
+        title={isActive ? "배경음악 정지" : "배경음악 재생"}
       >
         {isPlaying ? (
-          <Pause size={20} aria-hidden="true" />
+          <img
+            src={`${import.meta.env.BASE_URL}music/equalizer.svg`}
+            width={16}
+            height={16}
+            className="pointer-events-none h-4 w-4 invert"
+            alt=""
+            aria-hidden="true"
+          />
         ) : (
-          <Play size={20} aria-hidden="true" />
+          <Play size={11} fill="currentColor" aria-hidden="true" />
         )}
       </button>
     </div>

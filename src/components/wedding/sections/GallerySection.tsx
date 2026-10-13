@@ -1,11 +1,9 @@
-/*
-  GallerySection: 사진 슬라이더 (드래그/터치 제스처 지원)
-*/
-import React, { useEffect, useMemo, useRef, useState } from "react";
-
-type GallerySectionProps = {
-  debugClass?: string;
-};
+import { useRef, useState } from "react";
+import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
+import type { Swiper as SwiperInstance } from "swiper";
+import { A11y, Autoplay, Keyboard } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
 
 import g1 from "@/assets/img/비비엔다2.webp";
 import g2 from "@/assets/img/이모님1.jpg";
@@ -13,347 +11,114 @@ import g3 from "@/assets/img/이모님2.jpg";
 import g4 from "@/assets/img/이모님3.jpg";
 import g5 from "@/assets/img/이모님4.jpg";
 
-function clampIndex(i: number, len: number) {
-  if (len <= 0) return 0;
-  return ((i % len) + len) % len;
-}
+const images = [g1, g2, g3, g4, g5];
 
-function useInterval(callback: () => void, delay: number | null) {
-  const saved = useRef(callback);
-  useEffect(() => {
-    saved.current = callback;
-  }, [callback]);
+type GallerySectionProps = { debugClass?: string };
 
-  useEffect(() => {
-    if (delay === null) return;
-    const id = window.setInterval(() => saved.current(), delay);
-    return () => window.clearInterval(id);
-  }, [delay]);
-}
-
-function Dots({
-  count,
-  activeIndex,
-  onSelect,
-}: {
-  count: number;
-  activeIndex: number;
-  onSelect: (idx: number) => void;
-}) {
-  return (
-    <div className="mt-6 flex items-center justify-center gap-2">
-      {Array.from({ length: count }).map((_, i) => (
-        <button
-          key={i}
-          onClick={() => onSelect(i)}
-          className="w-2.5 h-2.5 rounded-full transition-all"
-          aria-label={`go to slide ${i + 1}`}
-          style={{
-            backgroundColor: i === activeIndex ? "#9a9a67" : "#d9d9c6",
-            transform: i === activeIndex ? "scale(1.05)" : "scale(1)",
-          }}
-        />
-      ))}
-    </div>
-  );
-}
-
-// ✅ 원형 배경 없이 SVG만
-function PlayIcon({ isPaused }: { isPaused: boolean }) {
-  return isPaused ? (
-    // ▶ 재생
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
-      fill="#444"
-      aria-hidden="true"
-    >
-      <path d="M8 5v14l11-7-11-7Z" />
-    </svg>
-  ) : (
-    // ⏸ 일시정지
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
-      fill="#444"
-      aria-hidden="true"
-    >
-      <path d="M6 5h4v14H6V5Zm8 0h4v14h-4V5Z" />
-    </svg>
-  );
-}
-
-// ✅ 원형 배경 없이 SVG 화살표만
-function ArrowBtn({
-  dir,
-  onClick,
-}: {
-  dir: "left" | "right";
-  onClick: () => void;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      aria-label={dir === "left" ? "previous slide" : "next slide"}
-      className="absolute top-1/2 -translate-y-1/2 z-20"
-      style={{
-        left: dir === "left" ? 12 : undefined,
-        right: dir === "right" ? 12 : undefined,
-      }}
-    >
-      {dir === "left" ? (
-        <svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true">
-          <path
-            d="M15 18 9 12l6-6"
-            fill="none"
-            stroke="#fff"
-            strokeWidth="2.2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      ) : (
-        <svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true">
-          <path
-            d="m9 6 6 6-6 6"
-            fill="none"
-            stroke="#fff"
-            strokeWidth="2.2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      )}
-    </button>
-  );
-}
-
-/**
- * ✅ px 기반 + 드래그(마우스/터치) + 스냅 슬라이더
- * - 클릭 기능 없음
- */
-function PeekSlider({
-  images,
-  index,
-  onChange,
-  heightPx = 520,
-  gapPx = 14,
-}: {
-  images: string[];
-  index: number;
-  onChange: (next: number) => void;
-  heightPx?: number;
-  gapPx?: number;
-}) {
-  const len = images.length;
-  const wrapRef = useRef<HTMLDivElement | null>(null);
-  const [wrapW, setWrapW] = useState(0);
-
-  // 드래그 상태
-  const draggingRef = useRef(false);
-  const startXRef = useRef(0);
-  const startYRef = useRef(0);
-  const pointerIdRef = useRef<number | null>(null);
-  const directionRef = useRef<"horizontal" | "vertical" | null>(null);
-  const dragDxRef = useRef(0);
-
-  const [dragDx, setDragDx] = useState(0);
-  const [noAnim, setNoAnim] = useState(false);
-
-  // ✅ 컨테이너 너비 측정
-  useEffect(() => {
-    const el = wrapRef.current;
-    if (!el) return;
-
-    const ro = new ResizeObserver(() => setWrapW(el.clientWidth));
-    ro.observe(el);
-    setWrapW(el.clientWidth);
-
-    return () => ro.disconnect();
-  }, []);
-
-  // ✅ 풀폭(양옆 안 보이게)
-  const slideW = wrapW;
-
-  // ✅ 현재 index에 대한 기본 위치 + 드래그 이동량
-  const baseTranslateX = -index * (slideW + gapPx);
-  const translateX = baseTranslateX + dragDx;
-
-  const beginDrag = (clientX: number) => {
-    if (len <= 1) return;
-    draggingRef.current = true;
-    startXRef.current = clientX;
-    dragDxRef.current = 0;
-    setNoAnim(true);
-  };
-
-  const moveDrag = (clientX: number) => {
-    if (!draggingRef.current) return;
-    const dx = clientX - startXRef.current;
-    dragDxRef.current = dx;
-    setDragDx(dx);
-  };
-
-  const endDrag = (cancelled = false) => {
-    if (!draggingRef.current) return;
-    draggingRef.current = false;
-
-    const threshold = Math.max(40, slideW * 0.15);
-    const dx = dragDxRef.current;
-
-    setNoAnim(false);
-    setDragDx(0);
-
-    if (cancelled || Math.abs(dx) < threshold) return;
-    if (dx > 0) onChange(clampIndex(index - 1, len));
-    else onChange(clampIndex(index + 1, len));
-  };
-
-  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!e.isPrimary || e.button !== 0 || len <= 1) return;
-    if ((e.target as HTMLElement).closest("button")) return;
-    pointerIdRef.current = e.pointerId;
-    startYRef.current = e.clientY;
-    directionRef.current = e.pointerType === "mouse" ? "horizontal" : null;
-    e.currentTarget.setPointerCapture(e.pointerId);
-    beginDrag(e.clientX);
-  };
-
-  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (pointerIdRef.current !== e.pointerId) return;
-    if (!directionRef.current) {
-      const dx = Math.abs(e.clientX - startXRef.current);
-      const dy = Math.abs(e.clientY - startYRef.current);
-      if (Math.max(dx, dy) < 8) return;
-      directionRef.current = dx >= dy ? "horizontal" : "vertical";
-    }
-    if (directionRef.current === "horizontal") moveDrag(e.clientX);
-  };
-
-  const finishPointer = (e: React.PointerEvent<HTMLDivElement>, cancelled = false) => {
-    if (pointerIdRef.current !== e.pointerId) return;
-    endDrag(cancelled || directionRef.current !== "horizontal");
-    pointerIdRef.current = null;
-    directionRef.current = null;
-    if (e.currentTarget.hasPointerCapture(e.pointerId)) {
-      e.currentTarget.releasePointerCapture(e.pointerId);
-    }
-  };
-
-  return (
-    <div
-      ref={wrapRef}
-      className="relative overflow-hidden select-none"
-      style={{ touchAction: "pan-y pinch-zoom" }}
-      onPointerDown={onPointerDown}
-      onPointerMove={onPointerMove}
-      onPointerUp={(e) => finishPointer(e)}
-      onPointerCancel={(e) => finishPointer(e, true)}
-      onLostPointerCapture={(e) => finishPointer(e, true)}
-    >
-      {/* Touch behavior must be set before a gesture starts. */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-x-0 top-[15%] bottom-[15%] z-10 cursor-grab active:cursor-grabbing"
-        style={{ touchAction: "pinch-zoom" }}
-      />
-      <ArrowBtn
-        dir="left"
-        onClick={() => onChange(clampIndex(index - 1, len))}
-      />
-      <ArrowBtn
-        dir="right"
-        onClick={() => onChange(clampIndex(index + 1, len))}
-      />
-
-      <div
-        className="flex cursor-grab active:cursor-grabbing"
-        style={{
-          gap: `${gapPx}px`,
-          transform: `translateX(${translateX}px)`,
-          transition: noAnim
-            ? "none"
-            : "transform 1200ms cubic-bezier(0.22, 1, 0.36, 1)" /* 슬라이드 속도 조절 */,
-          willChange: "transform",
-        }}
-      >
-        {images.map((src, i) => (
-          <div
-            key={src + i}
-            className="flex-shrink-0"
-            style={{ width: `${slideW}px` }}
-          >
-            <div
-              className="rounded-2xl overflow-hidden shadow-sm border border-[#f0f0f0] bg-white"
-              style={{ height: `${heightPx}px` }}
-            >
-              <img
-                src={src}
-                alt={`gallery ${i + 1}`}
-                loading="lazy"
-                decoding="async"
-                className="w-full h-full object-cover"
-                draggable={false}
-              />
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-export default function GallerySection({
-  debugClass = "",
-}: GallerySectionProps) {
-  const images = useMemo(() => [g1, g2, g3, g4, g5], []);
+export default function GallerySection({ debugClass = "" }: GallerySectionProps) {
+  const swiperRef = useRef<SwiperInstance | null>(null);
   const [index, setIndex] = useState(0);
-
   const [paused, setPaused] = useState(true);
 
-  const len = images.length;
-
-  // ✅ 5초 자동 넘김 (paused면 정지)
-  useInterval(
-    () => {
-      if (len <= 1) return;
-      setIndex((cur) => clampIndex(cur + 1, len));
-    },
-    !paused ? 5000 : null,
-  );
+  const toggleAutoplay = () => {
+    const swiper = swiperRef.current;
+    if (!swiper) return;
+    if (swiper.autoplay.running) swiper.autoplay.stop();
+    else swiper.autoplay.start();
+  };
 
   return (
     <section className={`px-6 py-14 bg-white ${debugClass}`}>
       <div className="max-w-[420px] mx-auto relative">
-        {/* 타이틀 */}
         <div className="text-center">
           <div className="text-[28px] tracking-[0.18em] text-[#1a1a1a]">
             <span style={{ fontFamily: "'Elsie', serif" }}>GALLERY</span>
           </div>
         </div>
 
-        {/* 우상단 재생/일시정지 (SVG만) */}
         <button
-          className="absolute top-0 right-0 p-1"
-          onClick={() => setPaused((v) => !v)}
+          type="button"
+          className="absolute top-0 right-0 p-1 text-[#444]"
+          onClick={toggleAutoplay}
           aria-label={paused ? "play" : "pause"}
+          title={paused ? "사진 자동 넘김 재생" : "사진 자동 넘김 일시정지"}
         >
-          <PlayIcon isPaused={paused} />
+          {paused ? <Play size={20} fill="currentColor" /> : <Pause size={20} fill="currentColor" />}
         </button>
 
-        {/* 슬라이더 */}
-        <div className="mt-10">
-          <PeekSlider
-            images={images}
-            index={index}
-            onChange={setIndex}
-            heightPx={520}
-            gapPx={14}
-          />
+        <div className="mt-10 relative">
+          <Swiper
+            className="wedding-gallery select-none"
+            modules={[A11y, Autoplay, Keyboard]}
+            onSwiper={(swiper) => { swiperRef.current = swiper; }}
+            onSlideChange={(swiper) => setIndex(swiper.realIndex)}
+            onAutoplayStart={() => setPaused(false)}
+            onAutoplayStop={() => setPaused(true)}
+            slidesPerView={1}
+            spaceBetween={14}
+            loop
+            speed={450}
+            threshold={8}
+            touchAngle={45}
+            longSwipesRatio={0.2}
+            touchStartPreventDefault={false}
+            grabCursor
+            keyboard={{ enabled: true, onlyInViewport: true }}
+            autoplay={{ enabled: false, delay: 5000, disableOnInteraction: false }}
+            a11y={{ containerMessage: "웨딩 사진 갤러리" }}
+            style={{ touchAction: "pan-y pinch-zoom" }}
+          >
+            {images.map((src, i) => (
+              <SwiperSlide key={src}>
+                <div className="h-[520px] rounded-2xl overflow-hidden shadow-sm border border-[#f0f0f0] bg-white">
+                  <img
+                    src={src}
+                    alt={`gallery ${i + 1}`}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-full object-cover"
+                    draggable={false}
+                  />
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
 
-          <Dots count={len} activeIndex={index} onSelect={setIndex} />
+          <button
+            type="button"
+            onClick={() => swiperRef.current?.slidePrev()}
+            aria-label="previous slide"
+            title="이전 사진"
+            className="absolute left-3 top-1/2 -translate-y-1/2 z-20 text-white"
+          >
+            <ChevronLeft size={28} strokeWidth={2.2} />
+          </button>
+          <button
+            type="button"
+            onClick={() => swiperRef.current?.slideNext()}
+            aria-label="next slide"
+            title="다음 사진"
+            className="absolute right-3 top-1/2 -translate-y-1/2 z-20 text-white"
+          >
+            <ChevronRight size={28} strokeWidth={2.2} />
+          </button>
+        </div>
+
+        <div className="mt-6 flex items-center justify-center gap-2">
+          {images.map((src, i) => (
+            <button
+              key={src}
+              type="button"
+              onClick={() => swiperRef.current?.slideToLoop(i)}
+              className="w-2.5 h-2.5 rounded-full transition-all"
+              aria-label={`go to slide ${i + 1}`}
+              aria-current={i === index ? "true" : undefined}
+              style={{
+                backgroundColor: i === index ? "#9a9a67" : "#d9d9c6",
+                transform: i === index ? "scale(1.05)" : "scale(1)",
+              }}
+            />
+          ))}
         </div>
       </div>
     </section>
