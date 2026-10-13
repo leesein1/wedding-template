@@ -8,7 +8,7 @@ const shareTemplate = {
   objectType: "feed" as const,
   content: {
     title: "이세인 ♥ 유화진 결혼합니다",
-    description: "2027년 1월 16일 토요일 오전 11시",
+    description: "2027.01.16(토) 오전 11시",
     imageUrl: `${invitationUrl}og-image.jpg?v=20261013`,
     imageWidth: 2160,
     imageHeight: 2700,
