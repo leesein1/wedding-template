@@ -18,6 +18,7 @@ import {
   // TimelineSection,
   WelcomeMessageSection,
   FooterSection,
+  ShareSection,
 } from "@/components/wedding/sections";
 
 /**
@@ -86,6 +87,7 @@ export default function MainWedding() {
       <LocationSection debugClass={debugClass} />
 
       {/* footer is always visible at the end */}
+      <ShareSection debugClass={debugClass} />
       <FooterSection debugClass={debugClass} />
     </WeddingCard>
   );
