@@ -10,15 +10,36 @@ import g2 from "@/assets/img/이모님1.jpg";
 import g3 from "@/assets/img/이모님2.jpg";
 import g4 from "@/assets/img/이모님3.jpg";
 import g5 from "@/assets/img/이모님4.jpg";
+import g6 from "@/assets/img/비비엔다1.webp";
+import g7 from "@/assets/img/반지사진1.jpg";
 
-const images = [g1, g2, g3, g4, g5];
+const images = [g1, g2, g3, g4, g5, g6, g7];
+const thumbnailsPerView = 5;
 
 type GallerySectionProps = { debugClass?: string };
 
 export default function GallerySection({ debugClass = "" }: GallerySectionProps) {
   const swiperRef = useRef<SwiperInstance | null>(null);
+  const thumbnailsRef = useRef<SwiperInstance | null>(null);
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(true);
+  const [thumbnailEdges, setThumbnailEdges] = useState({ start: true, end: false });
+
+  const updateThumbnailEdges = (swiper: SwiperInstance) => {
+    setThumbnailEdges({ start: swiper.isBeginning, end: swiper.isEnd });
+  };
+
+  const syncSelection = (swiper: SwiperInstance) => {
+    const selected = swiper.realIndex;
+    setIndex(selected);
+    const thumbnails = thumbnailsRef.current;
+    if (!thumbnails) return;
+    const firstVisible = thumbnails.activeIndex;
+    if (selected < firstVisible) thumbnails.slideTo(selected);
+    else if (selected >= firstVisible + thumbnailsPerView) {
+      thumbnails.slideTo(selected - thumbnailsPerView + 1);
+    }
+  };
 
   const toggleAutoplay = () => {
     const swiper = swiperRef.current;
@@ -28,7 +49,7 @@ export default function GallerySection({ debugClass = "" }: GallerySectionProps)
   };
 
   return (
-    <section className={`px-6 py-14 bg-white ${debugClass}`}>
+    <section className={`py-14 bg-white ${debugClass}`}>
       <div className="max-w-[420px] mx-auto relative">
         <div className="text-center">
           <div className="text-[28px] tracking-[0.18em] text-[#1a1a1a]">
@@ -38,7 +59,7 @@ export default function GallerySection({ debugClass = "" }: GallerySectionProps)
 
         <button
           type="button"
-          className="absolute top-0 right-0 p-1 text-[#444]"
+          className="absolute top-0 right-4 flex h-9 w-9 items-center justify-center text-[#444] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#9a9a67]"
           onClick={toggleAutoplay}
           aria-label={paused ? "play" : "pause"}
           title={paused ? "사진 자동 넘김 재생" : "사진 자동 넘김 일시정지"}
@@ -51,11 +72,11 @@ export default function GallerySection({ debugClass = "" }: GallerySectionProps)
             className="wedding-gallery select-none"
             modules={[A11y, Autoplay, Keyboard]}
             onSwiper={(swiper) => { swiperRef.current = swiper; }}
-            onSlideChange={(swiper) => setIndex(swiper.realIndex)}
+            onSlideChange={syncSelection}
             onAutoplayStart={() => setPaused(false)}
             onAutoplayStop={() => setPaused(true)}
             slidesPerView={1}
-            spaceBetween={14}
+            spaceBetween={0}
             loop
             speed={450}
             threshold={8}
@@ -70,10 +91,10 @@ export default function GallerySection({ debugClass = "" }: GallerySectionProps)
           >
             {images.map((src, i) => (
               <SwiperSlide key={src}>
-                <div className="h-[520px] rounded-2xl overflow-hidden shadow-sm border border-[#f0f0f0] bg-white">
+                <div className="aspect-[3/4] overflow-hidden bg-[#f5f5f5]">
                   <img
                     src={src}
-                    alt={`gallery ${i + 1}`}
+                    alt={`웨딩 사진 ${i + 1}`}
                     loading="lazy"
                     decoding="async"
                     className="w-full h-full object-cover"
@@ -87,38 +108,89 @@ export default function GallerySection({ debugClass = "" }: GallerySectionProps)
           <button
             type="button"
             onClick={() => swiperRef.current?.slidePrev()}
-            aria-label="previous slide"
+            aria-label="이전 사진"
             title="이전 사진"
-            className="absolute left-3 top-1/2 -translate-y-1/2 z-20 text-white"
+            className="absolute left-1 top-1/2 -translate-y-1/2 z-20 flex h-11 w-11 items-center justify-center text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
           >
             <ChevronLeft size={28} strokeWidth={2.2} />
           </button>
           <button
             type="button"
             onClick={() => swiperRef.current?.slideNext()}
-            aria-label="next slide"
+            aria-label="다음 사진"
             title="다음 사진"
-            className="absolute right-3 top-1/2 -translate-y-1/2 z-20 text-white"
+            className="absolute right-1 top-1/2 -translate-y-1/2 z-20 flex h-11 w-11 items-center justify-center text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
           >
             <ChevronRight size={28} strokeWidth={2.2} />
           </button>
         </div>
 
-        <div className="mt-6 flex items-center justify-center gap-2">
-          {images.map((src, i) => (
+        <div className="relative mt-3">
+          <Swiper
+            className="wedding-gallery-thumbnails select-none"
+            modules={[A11y]}
+            onSwiper={(swiper) => {
+              thumbnailsRef.current = swiper;
+              updateThumbnailEdges(swiper);
+            }}
+            onSlideChange={updateThumbnailEdges}
+            onResize={updateThumbnailEdges}
+            onReachBeginning={updateThumbnailEdges}
+            onReachEnd={updateThumbnailEdges}
+            slidesPerView={thumbnailsPerView}
+            spaceBetween={4}
+            speed={350}
+            threshold={8}
+            watchSlidesProgress
+            a11y={{ containerMessage: "웨딩 사진 썸네일 목록" }}
+            style={{ touchAction: "pan-y pinch-zoom" }}
+          >
+            {images.map((src, i) => (
+              <SwiperSlide key={src}>
+                <button
+                  type="button"
+                  onClick={() => swiperRef.current?.slideToLoop(i)}
+                  className={`relative block aspect-square w-full overflow-hidden transition-opacity focus-visible:outline-none ${i === index ? "opacity-100" : "opacity-60 hover:opacity-100 focus-visible:opacity-100"}`}
+                  aria-label={`웨딩 사진 ${i + 1} 선택`}
+                  aria-current={i === index ? "true" : undefined}
+                >
+                  <img
+                    src={src}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                    draggable={false}
+                    className="h-full w-full object-cover"
+                  />
+                  <span className={`pointer-events-none absolute inset-0 border-2 ${i === index ? "border-[#9a9a67]" : "border-transparent"} [button:focus-visible_&]:border-[#9a9a67]`} />
+                </button>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+          {images.length > thumbnailsPerView && (
+            <>
             <button
-              key={src}
               type="button"
-              onClick={() => swiperRef.current?.slideToLoop(i)}
-              className="w-2.5 h-2.5 rounded-full transition-all"
-              aria-label={`go to slide ${i + 1}`}
-              aria-current={i === index ? "true" : undefined}
-              style={{
-                backgroundColor: i === index ? "#9a9a67" : "#d9d9c6",
-                transform: i === index ? "scale(1.05)" : "scale(1)",
-              }}
-            />
-          ))}
+              onClick={() => thumbnailsRef.current?.slideTo(Math.max(0, (thumbnailsRef.current?.activeIndex ?? 0) - thumbnailsPerView))}
+              disabled={thumbnailEdges.start}
+              aria-label="이전 썸네일 목록"
+              title="이전 썸네일 목록"
+              className="absolute left-1 top-1/2 z-20 flex h-11 w-7 -translate-y-1/2 items-center justify-center text-white disabled:pointer-events-none disabled:opacity-25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
+            >
+              <ChevronLeft size={22} />
+            </button>
+            <button
+              type="button"
+              onClick={() => thumbnailsRef.current?.slideTo(Math.min(images.length - thumbnailsPerView, (thumbnailsRef.current?.activeIndex ?? 0) + thumbnailsPerView))}
+              disabled={thumbnailEdges.end}
+              aria-label="다음 썸네일 목록"
+              title="다음 썸네일 목록"
+              className="absolute right-1 top-1/2 z-20 flex h-11 w-7 -translate-y-1/2 items-center justify-center text-white disabled:pointer-events-none disabled:opacity-25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
+            >
+              <ChevronRight size={22} />
+            </button>
+            </>
+          )}
         </div>
       </div>
     </section>

@@ -218,7 +218,7 @@ export default function AccountSection({
       {
         side: "groom",
         roleLabel: "신랑 아버지",
-        ownerName: "이정빈",
+        ownerName: "이상권",
         bankName: "농협",
         accountNo: "130018-52-012111",
         pay: "kakaopay",
@@ -226,7 +226,7 @@ export default function AccountSection({
       {
         side: "groom",
         roleLabel: "신랑 어머니",
-        ownerName: "홍지은",
+        ownerName: "박선욱",
         bankName: "농협",
         accountNo: "216034-52-107713",
         pay: "kakaopay",
