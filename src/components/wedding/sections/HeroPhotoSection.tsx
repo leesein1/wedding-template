@@ -14,9 +14,9 @@ import {
   useState,
 } from "react";
 import weGotMarriedSvg from "@/assets/we-got-married.svg?raw";
+import mainPhoto from "@/assets/img/last/preview/img_13.webp";
 import weddingTitleWebp from "@/assets/our-wedding-title.webp";
 
-const mainPhoto = `${import.meta.env.BASE_URL}hero-main.webp`;
 const titleImageAspectRatio = "754 / 1132";
 
 type HeroPhotoSectionProps = {

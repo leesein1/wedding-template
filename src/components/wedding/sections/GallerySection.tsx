@@ -4,21 +4,17 @@ import type { Swiper as SwiperInstance } from "swiper";
 import { A11y, Autoplay, Keyboard } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
-
-import g1 from "@/assets/img/비비엔다2.webp";
-import g2 from "@/assets/img/이모님1.jpg";
-import g3 from "@/assets/img/이모님2.jpg";
-import g4 from "@/assets/img/이모님3.jpg";
-import g5 from "@/assets/img/이모님4.jpg";
-import g6 from "@/assets/img/비비엔다1.webp";
-import g7 from "@/assets/img/반지사진1.jpg";
-
-const images = [g1, g2, g3, g4, g5, g6, g7];
+import {
+  weddingPhotos as images,
+  prioritizeWeddingPhoto,
+  useDownloadedWeddingPhotos,
+} from "@/components/wedding/photos";
 const thumbnailsPerView = 5;
 
 type GallerySectionProps = { debugClass?: string };
 
 export default function GallerySection({ debugClass = "" }: GallerySectionProps) {
+  const downloaded = useDownloadedWeddingPhotos();
   const swiperRef = useRef<SwiperInstance | null>(null);
   const thumbnailsRef = useRef<SwiperInstance | null>(null);
   const [index, setIndex] = useState(0);
@@ -31,6 +27,7 @@ export default function GallerySection({ debugClass = "" }: GallerySectionProps)
 
   const syncSelection = (swiper: SwiperInstance) => {
     const selected = swiper.realIndex;
+    prioritizeWeddingPhoto(selected);
     setIndex(selected);
     const thumbnails = thumbnailsRef.current;
     if (!thumbnails) return;
@@ -89,11 +86,11 @@ export default function GallerySection({ debugClass = "" }: GallerySectionProps)
             a11y={{ containerMessage: "웨딩 사진 갤러리" }}
             style={{ touchAction: "pan-y pinch-zoom" }}
           >
-            {images.map((src, i) => (
-              <SwiperSlide key={src}>
+            {images.map((photo, i) => (
+              <SwiperSlide key={photo.full}>
                 <div className="aspect-[3/4] overflow-hidden bg-[#f5f5f5]">
                   <img
-                    src={src}
+                    src={downloaded.has(photo.full) && i === index ? photo.full : photo.preview}
                     alt={`웨딩 사진 ${i + 1}`}
                     loading="lazy"
                     decoding="async"
@@ -145,8 +142,8 @@ export default function GallerySection({ debugClass = "" }: GallerySectionProps)
             a11y={{ containerMessage: "웨딩 사진 썸네일 목록" }}
             style={{ touchAction: "pan-y pinch-zoom" }}
           >
-            {images.map((src, i) => (
-              <SwiperSlide key={src}>
+            {images.map((photo, i) => (
+              <SwiperSlide key={photo.full}>
                 <button
                   type="button"
                   onClick={() => swiperRef.current?.slideToLoop(i)}
@@ -155,7 +152,7 @@ export default function GallerySection({ debugClass = "" }: GallerySectionProps)
                   aria-current={i === index ? "true" : undefined}
                 >
                   <img
-                    src={src}
+                    src={photo.thumbnail}
                     alt=""
                     loading="lazy"
                     decoding="async"
