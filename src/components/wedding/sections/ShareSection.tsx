@@ -10,9 +10,9 @@ const shareTemplate = {
   content: {
     title: "이세인 ♥ 유화진 결혼합니다",
     description: "2027.01.16(토) 오전 11시",
-    imageUrl: `${invitationUrl}og-image.jpg?v=20261014`,
+    imageUrl: `${invitationUrl}og-image.jpg?v=20261014-img13`,
     imageWidth: 1200,
-    imageHeight: 1500,
+    imageHeight: 1594,
     link,
   },
   buttons: [{ title: "청첩장 보기", link }],
