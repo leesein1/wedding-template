@@ -153,6 +153,12 @@
     <title>세인 🖤 화진 결혼합니다</title>
   </head>
   <body>
+    <audio
+      id="wedding-audio"
+      src="%BASE_URL%music/wedding.mp3"
+      loop
+      preload="auto"
+    ></audio>
     <div id="initial-cover" aria-hidden="true">
       <div class="initial-cover-frame">
         <div class="initial-cover-mark">
@@ -164,6 +170,9 @@
     </div>
     <div id="root"></div>
     <script>
+      var weddingAudio = document.getElementById("wedding-audio");
+      weddingAudio.volume = 0.6;
+      weddingAudio.autoplay = !/\/(?:invite|wedding)\/?$/.test(window.location.pathname);
       (function () {
         var cover = document.getElementById("initial-cover");
         if (!cover) return;

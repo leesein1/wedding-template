@@ -40,10 +40,26 @@ export default function HeaderSection({ debugClass = "" }: HeaderSectionProps) {
   }, []);
 
   useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
+    const audio = document.getElementById("wedding-audio");
+    if (!(audio instanceof HTMLAudioElement)) return;
+    audioRef.current = audio;
 
     const requests = requestRef;
+
+    const onPlaying = () => {
+      setIsPlaying(true);
+      setIsStarting(false);
+    };
+    const onStopped = () => {
+      setIsPlaying(false);
+      setIsStarting(false);
+    };
+    audio.addEventListener("playing", onPlaying);
+    audio.addEventListener("pause", onStopped);
+    audio.addEventListener("error", onStopped);
+    if (!audio.paused && audio.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) {
+      onPlaying();
+    }
 
     const tryPlay = () => {
       if (wantsPlaybackRef.current && audio.paused) {
@@ -83,6 +99,9 @@ export default function HeaderSection({ debugClass = "" }: HeaderSectionProps) {
     }
 
     return () => {
+      audio.removeEventListener("playing", onPlaying);
+      audio.removeEventListener("pause", onStopped);
+      audio.removeEventListener("error", onStopped);
       audio.removeEventListener("canplay", tryPlay);
       document.removeEventListener("visibilitychange", onVisible);
       window.removeEventListener("pageshow", tryPlay);
@@ -93,6 +112,7 @@ export default function HeaderSection({ debugClass = "" }: HeaderSectionProps) {
 
       ++requests.current;
       audio.pause();
+      audioRef.current = null;
     };
   }, [playAudio]);
 
@@ -116,25 +136,6 @@ export default function HeaderSection({ debugClass = "" }: HeaderSectionProps) {
 
   return (
     <div className={debugClass}>
-      <audio
-        ref={audioRef}
-        src={`${import.meta.env.BASE_URL}music/wedding.mp3`}
-        loop
-        preload="auto"
-        onPlaying={() => {
-          setIsPlaying(true);
-          setIsStarting(false);
-        }}
-        onPause={() => {
-          setIsPlaying(false);
-          setIsStarting(false);
-        }}
-        onError={() => {
-          setIsPlaying(false);
-          setIsStarting(false);
-        }}
-      />
-
       <button
         ref={buttonRef}
         type="button"
