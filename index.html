@@ -4,6 +4,17 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      window.weddingAudio = new Audio("%BASE_URL%music/wedding.mp3");
+      window.weddingAudio.volume = 0.6;
+      window.weddingAudio.loop = true;
+      window.weddingAudio.preload = "auto";
+      if (!/\/(?:invite|wedding)\/?$/.test(window.location.pathname)) {
+        window.weddingAudio.play().catch(function () {
+          // The music control retries playback when the user interacts.
+        });
+      }
+    </script>
     <link
       rel="preload"
       as="image"
@@ -153,12 +164,6 @@
     <title>세인 🖤 화진 결혼합니다</title>
   </head>
   <body>
-    <audio
-      id="wedding-audio"
-      src="%BASE_URL%music/wedding.mp3"
-      loop
-      preload="auto"
-    ></audio>
     <div id="initial-cover" aria-hidden="true">
       <div class="initial-cover-frame">
         <div class="initial-cover-mark">
@@ -170,9 +175,6 @@
     </div>
     <div id="root"></div>
     <script>
-      var weddingAudio = document.getElementById("wedding-audio");
-      weddingAudio.volume = 0.6;
-      weddingAudio.autoplay = !/\/(?:invite|wedding)\/?$/.test(window.location.pathname);
       (function () {
         var cover = document.getElementById("initial-cover");
         if (!cover) return;

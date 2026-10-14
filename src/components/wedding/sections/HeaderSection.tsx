@@ -1,6 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Play } from "lucide-react";
 
+declare global {
+  interface Window {
+    weddingAudio?: HTMLAudioElement;
+  }
+}
+
 type HeaderSectionProps = { debugClass?: string };
 
 export default function HeaderSection({ debugClass = "" }: HeaderSectionProps) {
@@ -40,7 +46,7 @@ export default function HeaderSection({ debugClass = "" }: HeaderSectionProps) {
   }, []);
 
   useEffect(() => {
-    const audio = document.getElementById("wedding-audio");
+    const audio = window.weddingAudio;
     if (!(audio instanceof HTMLAudioElement)) return;
     audioRef.current = audio;
 
