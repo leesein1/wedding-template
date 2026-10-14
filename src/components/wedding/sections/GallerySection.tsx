@@ -88,9 +88,12 @@ export default function GallerySection({ debugClass = "" }: GallerySectionProps)
           >
             {images.map((photo, i) => (
               <SwiperSlide key={photo.full}>
-                <div className="aspect-[3/4] overflow-hidden bg-[#f5f5f5]">
+                <div
+                  className="aspect-[3/4] overflow-hidden bg-[#f5f5f5] bg-cover bg-center"
+                  style={{ backgroundImage: `url(${photo.preview})` }}
+                >
                   <img
-                    src={downloaded.has(photo.full) && i === index ? photo.full : photo.preview}
+                    src={downloaded.has(photo.full) ? photo.full : photo.preview}
                     alt={`웨딩 사진 ${i + 1}`}
                     loading="lazy"
                     decoding="async"
@@ -146,7 +149,10 @@ export default function GallerySection({ debugClass = "" }: GallerySectionProps)
               <SwiperSlide key={photo.full}>
                 <button
                   type="button"
-                  onClick={() => swiperRef.current?.slideToLoop(i)}
+                  onClick={() => {
+                    prioritizeWeddingPhoto(i);
+                    swiperRef.current?.slideToLoop(i);
+                  }}
                   className={`relative block aspect-square w-full overflow-hidden transition-opacity focus-visible:outline-none ${i === index ? "opacity-100" : "opacity-60 hover:opacity-100 focus-visible:opacity-100"}`}
                   aria-label={`웨딩 사진 ${i + 1} 선택`}
                   aria-current={i === index ? "true" : undefined}
