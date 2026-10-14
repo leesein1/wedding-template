@@ -1,5 +1,3 @@
-import { useEffect } from "react";
-import { startWeddingPhotoDownloads } from "@/components/wedding/photos";
 import Reveal from "@/components/common/Reveal";
 import WeddingCard from "@/components/wedding/WeddingCard";
 
@@ -48,10 +46,6 @@ import {
  *    내용을 수정하여 텍스트, 이미지 또는 동작을 변경할 수 있습니다.
  */
 export default function MainWedding() {
-  useEffect(() => {
-    void startWeddingPhotoDownloads();
-  }, []);
-
   const debug = import.meta.env.DEV;
   // when debug is true we apply an extra class to most child components
   // this is a simple way to visualize spacing and boundaries during

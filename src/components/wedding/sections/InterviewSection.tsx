@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ChevronDown, Mail } from "lucide-react";
 import groomPhoto from "@/assets/img/어린_이세인.png";
-import bridePhoto from "@/assets/img/어린_유화진.png";
+import bridePhoto from "@/assets/img/bride-childhood.webp";
 
 type InterviewSectionProps = { debugClass?: string };
 

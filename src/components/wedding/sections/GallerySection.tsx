@@ -4,17 +4,12 @@ import type { Swiper as SwiperInstance } from "swiper";
 import { A11y, Autoplay, Keyboard } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
-import {
-  weddingPhotos as images,
-  prioritizeWeddingPhoto,
-  useDownloadedWeddingPhotos,
-} from "@/components/wedding/photos";
+import { weddingPhotos as images } from "@/components/wedding/photos";
 const thumbnailsPerView = 5;
 
 type GallerySectionProps = { debugClass?: string };
 
 export default function GallerySection({ debugClass = "" }: GallerySectionProps) {
-  const downloaded = useDownloadedWeddingPhotos();
   const swiperRef = useRef<SwiperInstance | null>(null);
   const thumbnailsRef = useRef<SwiperInstance | null>(null);
   const [index, setIndex] = useState(0);
@@ -27,7 +22,6 @@ export default function GallerySection({ debugClass = "" }: GallerySectionProps)
 
   const syncSelection = (swiper: SwiperInstance) => {
     const selected = swiper.realIndex;
-    prioritizeWeddingPhoto(selected);
     setIndex(selected);
     const thumbnails = thumbnailsRef.current;
     if (!thumbnails) return;
@@ -87,13 +81,13 @@ export default function GallerySection({ debugClass = "" }: GallerySectionProps)
             style={{ touchAction: "pan-y pinch-zoom" }}
           >
             {images.map((photo, i) => (
-              <SwiperSlide key={photo.full}>
+              <SwiperSlide key={photo.name}>
                 <div
                   className="aspect-[3/4] overflow-hidden bg-[#f5f5f5] bg-cover bg-center"
-                  style={{ backgroundImage: `url(${photo.preview})` }}
+                  style={{ backgroundImage: `url(${photo.thumbnail})` }}
                 >
                   <img
-                    src={downloaded.has(photo.full) ? photo.full : photo.preview}
+                    src={photo.preview}
                     alt={`웨딩 사진 ${i + 1}`}
                     loading="lazy"
                     decoding="async"
@@ -146,13 +140,10 @@ export default function GallerySection({ debugClass = "" }: GallerySectionProps)
             style={{ touchAction: "pan-y pinch-zoom" }}
           >
             {images.map((photo, i) => (
-              <SwiperSlide key={photo.full}>
+              <SwiperSlide key={photo.name}>
                 <button
                   type="button"
-                  onClick={() => {
-                    prioritizeWeddingPhoto(i);
-                    swiperRef.current?.slideToLoop(i);
-                  }}
+                  onClick={() => swiperRef.current?.slideToLoop(i)}
                   className={`relative block aspect-square w-full overflow-hidden transition-opacity focus-visible:outline-none ${i === index ? "opacity-100" : "opacity-60 hover:opacity-100 focus-visible:opacity-100"}`}
                   aria-label={`웨딩 사진 ${i + 1} 선택`}
                   aria-current={i === index ? "true" : undefined}
