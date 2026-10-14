@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Check, Link, MessageCircle } from "lucide-react";
+import { useRevealOnScroll } from "@/hooks/useRevealOnScroll";
 
 const invitationUrl = "https://hwajinyu.silee.net/";
 const shareKey = import.meta.env.VITE_KAKAO_SHARE_JS_KEY || import.meta.env.VITE_KAKAO_MAP_JS_KEY;
@@ -9,9 +10,9 @@ const shareTemplate = {
   content: {
     title: "이세인 ♥ 유화진 결혼합니다",
     description: "2027.01.16(토) 오전 11시",
-    imageUrl: `${invitationUrl}og-image.jpg?v=20261013`,
-    imageWidth: 2160,
-    imageHeight: 2700,
+    imageUrl: `${invitationUrl}og-image.jpg?v=20261014`,
+    imageWidth: 1200,
+    imageHeight: 1500,
     link,
   },
   buttons: [{ title: "청첩장 보기", link }],
@@ -76,11 +77,13 @@ type ShareSectionProps = {
 };
 
 export default function ShareSection({ debugClass = "" }: ShareSectionProps) {
+  const { ref, isVisible: isNearViewport } = useRevealOnScroll({ rootMargin: "800px 0px", threshold: 0 });
   const [ready, setReady] = useState(false);
   const [message, setMessage] = useState("");
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
+    if (!isNearViewport) return;
     let active = true;
     // Load before the click so mobile sharing keeps the user's activation.
     void loadShareSdk().then(() => {
@@ -89,7 +92,7 @@ export default function ShareSection({ debugClass = "" }: ShareSectionProps) {
       if (active) setMessage("카카오톡 공유를 사용할 수 없습니다. 링크 복사를 이용해주세요.");
     });
     return () => { active = false; };
-  }, []);
+  }, [isNearViewport]);
 
   useEffect(() => {
     if (!copied) return;
@@ -118,7 +121,7 @@ export default function ShareSection({ debugClass = "" }: ShareSectionProps) {
   };
 
   return (
-    <section className={`px-6 py-10 bg-[#fcfcfc] ${debugClass}`}>
+    <section ref={ref} className={`px-6 py-10 bg-[#fcfcfc] ${debugClass}`}>
       <div className="max-w-[382px] mx-auto flex flex-col gap-3">
         <button
           type="button"

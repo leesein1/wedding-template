@@ -10,6 +10,7 @@ coverage/
 # Background music (include the default track for deployment)
 *.mp3
 !/public/music/wedding.mp3
+!/src/assets/music/wedding-original.mp3
 
 # Logs
 logs/

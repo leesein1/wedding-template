@@ -1,5 +1,6 @@
 import Reveal from "@/components/common/Reveal";
 import WeddingCard from "@/components/wedding/WeddingCard";
+import GallerySection from "@/components/wedding/LazyGallerySection";
 
 // sections are all re-exported from the `sections/index.ts` file; this
 // keeps the import statement concise.  add new sections there if you
@@ -10,7 +11,6 @@ import {
   CalendarSection,
   CoupleInfoSection,
   // DateTitleSection,
-  GallerySection,
   HeaderSection,
   HeroPhotoSection,
   InterviewSection,

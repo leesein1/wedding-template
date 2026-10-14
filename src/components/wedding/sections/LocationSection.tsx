@@ -4,6 +4,7 @@
   MainWedding에서 순서에 맞게 배치되며, 독립적인 상태와 로직을 가집니다.
 */
 import React, { useEffect, useRef, useState } from "react";
+import { useRevealOnScroll } from "@/hooks/useRevealOnScroll";
 
 declare global {
   interface Window {
@@ -247,15 +248,14 @@ function Badge({ text }: { text: string }) {
 export default function LocationSection({
   debugClass = "",
 }: LocationSectionProps) {
+  const { ref, isVisible: isNearViewport } = useRevealOnScroll({ rootMargin: "800px 0px", threshold: 0 });
   const mapRef = useRef<HTMLDivElement | null>(null);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(() => import.meta.env.VITE_KAKAO_MAP_JS_KEY ? "" : "VITE_KAKAO_MAP_JS_KEY가 설정되지 않았습니다.");
 
   useEffect(() => {
+    if (!isNearViewport) return;
     const key = import.meta.env.VITE_KAKAO_MAP_JS_KEY as string | undefined;
-    if (!key) {
-      setError("VITE_KAKAO_MAP_JS_KEY가 설정되지 않았습니다.");
-      return;
-    }
+    if (!key) return;
 
     const renderMap = () => {
       if (!window.kakao?.maps || !mapRef.current) return;
@@ -274,7 +274,7 @@ export default function LocationSection({
         const marker = new window.kakao.maps.Marker({ position: center });
         marker.setMap(map);
 
-        setTimeout(() => (map as any)?.relayout?.(), 120);
+        setTimeout(() => map.relayout?.(), 120);
       });
     };
 
@@ -305,10 +305,10 @@ export default function LocationSection({
       script?.removeEventListener("load", onLoad);
       script?.removeEventListener("error", onErr);
     };
-  }, []);
+  }, [isNearViewport]);
 
   return (
-    <section className={`px-6 py-10 bg-white ${debugClass}`}>
+    <section ref={ref} className={`px-6 py-10 bg-white ${debugClass}`}>
       <div className="max-w-[420px] mx-auto">
         <div className="text-center">
           {/* ✅ LOCATION만 Elsie */}

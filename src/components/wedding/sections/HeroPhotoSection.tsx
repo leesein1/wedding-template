@@ -15,7 +15,7 @@ import {
 } from "react";
 import weGotMarriedSvg from "@/assets/we-got-married.svg?raw";
 import mainPhoto from "@/assets/img/last/preview/img_13.webp";
-import weddingTitleWebp from "@/assets/our-wedding-title.webp";
+import weddingTitleWebp from "@/assets/our-wedding-title-lite.webp";
 
 const titleImageAspectRatio = "754 / 1132";
 
