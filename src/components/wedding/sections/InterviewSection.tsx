@@ -27,7 +27,7 @@ const items: InterviewItem[] = [
       {
         speaker: "both",
         lines: [
-          { text: "사실 저희의 인연은 아주 오래전, 유치원 시절부터 시작되었습니다." },
+          { text: "사실 저희의 인연은 아주 오래전,\n유치원 시절부터 시작되었습니다." },
           { text: "함께 찍은 사진도 남아 있지만,\n정작 그때의 기억은 서로 희미합니다." },
           { text: "어린 시절 스쳐 지나간 인연이 시간이 흘러 다시 만나,\n평생을 함께할 인연이 되었습니다." },
         ],
@@ -47,7 +47,7 @@ const items: InterviewItem[] = [
       {
         speaker: "bride",
         lines: [
-          { text: "함께할수록 마음이 편안해지고, 어떤 순간에도\n나의 든든한 편이 되어줄 수 있겠다는 확신이 들었습니다." },
+          { text: "함께할수록 마음이 편안해지고,\n어떤 순간에도 나의 든든한 편이 되어줄 수 있겠다는\n확신이 들었습니다." },
           { text: "앞으로의 날들도 안정감을 주는 든든한 울타리같은 느낌이었달까요!" },
         ],
       },
@@ -59,7 +59,7 @@ const items: InterviewItem[] = [
       {
         speaker: "groom",
         lines: [
-          { text: "평범한 하루를 행복으로 채워주고, 힘들고 지치는 순간에도 언제나 든든한 내 편이 되어주는 것." },
+          { text: "평범한 하루를 행복으로 채워주고,\n힘들고 지치는 순간에도\n언제나 든든한 내 편이 되어주는 것." },
           { text: "언제나 함께 웃고 서로에게 힘이 되어주는 것이 가장 고맙습니다." },
         ],
       },
@@ -90,8 +90,8 @@ const items: InterviewItem[] = [
       {
         speaker: "both",
         lines: [
-          { text: "먼 걸음으로 축복해 주시는 마음을 오래 기억하겠습니다." },
-          { text: "저희의 시작을 함께 바라봐 주세요.", highlight: true },
+          { text: "추운 날씨에도 귀한 걸음 해주셔서 감사합니다." },
+          { text: "저희의 새로운 시작을 따뜻하게 축복해 주세요.", highlight: true },
         ],
       },
     ],
@@ -182,14 +182,16 @@ export default function InterviewSection({
             src={groomPhoto}
             alt="신랑 이세인의 어린 시절"
             loading="lazy"
-            className="aspect-square w-full rounded-[6px] object-cover"
+            className="aspect-square w-full rounded-[6px] object-cover object-[center_15%]"
           />
-          <img
-            src={bridePhoto}
-            alt="신부 유화진의 어린 시절"
-            loading="lazy"
-            className="aspect-square w-full rounded-[6px] object-cover"
-          />
+          <div className="aspect-square overflow-hidden rounded-[6px]">
+            <img
+              src={bridePhoto}
+              alt="신부 유화진의 어린 시절"
+              loading="lazy"
+              className="h-full w-full scale-[1.4] object-cover object-[center_65%]"
+            />
+          </div>
         </div>
 
         <div className="mt-8 flex justify-center">
