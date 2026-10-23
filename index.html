@@ -5,6 +5,18 @@
     <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script>
+      // Decide before the first paint; the loading cover and React share this flag.
+      (function () {
+        var root = document.documentElement;
+        var host = window.location.hostname;
+        root.dataset.weddingVersion = host === "hwajinyu2.silee.net"
+          ? "v2"
+          : host === "hwajinyu.silee.net"
+            ? "v1"
+            : root.dataset.weddingVersion || "v1";
+      })();
+    </script>
+    <script>
       window.weddingAudio = new Audio("%BASE_URL%music/wedding.mp3");
       window.weddingAudio.volume = 0.6;
       window.weddingAudio.loop = true;
@@ -50,6 +62,10 @@
         background: #ecebe8;
       }
 
+      html[data-wedding-version="v2"] {
+        --wedding-hero-image: url("/hero-v2.webp");
+      }
+
       #initial-cover {
         position: fixed;
         inset: 0;
@@ -83,7 +99,7 @@
         content: "";
         position: absolute;
         inset: -12px;
-        background: url("/src/assets/img/last/preview/img_13.webp") center / cover no-repeat;
+        background: var(--wedding-hero-image, url("/src/assets/img/last/preview/img_13.webp")) center / cover no-repeat;
         filter: blur(3px) brightness(0.58);
         transform: scale(1.035);
       }
