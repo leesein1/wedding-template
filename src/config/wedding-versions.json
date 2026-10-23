@@ -2,6 +2,7 @@
   "v1": {
     "url": "https://hwajinyu.silee.net/",
     "heroImage": null,
+    "scrollHintColor": "#ffffff",
     "shareImage": "og-image.jpg?v=20261014-img13",
     "shareImageWidth": 1200,
     "shareImageHeight": 1594,
@@ -11,6 +12,7 @@
   "v2": {
     "url": "https://hwajinyu2.silee.net/",
     "heroImage": "/hero-v2-img7.webp",
+    "scrollHintColor": "#000000",
     "shareImage": "og-image-v2-img7.jpg",
     "shareImageWidth": 852,
     "shareImageHeight": 1280,

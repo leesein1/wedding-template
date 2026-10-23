@@ -689,8 +689,9 @@ export default function HeroPhotoSection({
 
       {/* Scroll Down */}
       <div
-        className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white text-sm transition-opacity"
+        className="absolute bottom-6 left-1/2 -translate-x-1/2 text-sm transition-opacity"
         style={{
+          color: wedding.scrollHintColor,
           opacity: phase >= 3 ? 0.8 : 0,
           letterSpacing: "0.05em",
         }}
