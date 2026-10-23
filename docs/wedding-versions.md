@@ -27,7 +27,7 @@
    `hwajinyu2.silee.net`을 추가합니다. 기존 주소로 리다이렉트하지 않고
    같은 Production 배포에 직접 연결합니다.
 2. DNS 관리에서 Vercel이 안내하는 CNAME 레코드를 추가합니다.
-3. `vercel.json`의 호스트 조건 rewrite가 새 주소의 `/`를
+3. `vercel.json`의 호스트 조건 route가 정적 파일 처리보다 먼저 새 주소의 `/`를
    `/index-v2.html`로 내부 연결합니다. 브라우저 주소는 그대로 유지됩니다.
 4. 카카오 앱의 JavaScript SDK 도메인과 웹 도메인에 새 주소를 추가합니다.
    `docs/kakao-share.md`를 참고합니다.
