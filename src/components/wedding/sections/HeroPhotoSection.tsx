@@ -656,8 +656,9 @@ export default function HeroPhotoSection({
 
       {/* 날짜 + 이름 */}
       <div
-        className="absolute bottom-20 left-1/2 -translate-x-1/2 text-white text-center"
+        className="absolute bottom-20 left-1/2 -translate-x-1/2 text-center"
         style={{
+          color: wedding.heroTextColor,
           transform:
             phase >= 3 ? "translate(-50%, 0px)" : "translate(-50%, 8px)",
           opacity: phase >= 3 ? 1 : 0,
@@ -691,7 +692,7 @@ export default function HeroPhotoSection({
       <div
         className="absolute bottom-6 left-1/2 -translate-x-1/2 text-sm transition-opacity"
         style={{
-          color: wedding.scrollHintColor,
+          color: wedding.heroTextColor,
           opacity: phase >= 3 ? 0.8 : 0,
           letterSpacing: "0.05em",
         }}
