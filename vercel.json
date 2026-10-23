@@ -1,0 +1,10 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    {
+      "source": "/",
+      "has": [{ "type": "host", "value": "hwajinyu2.silee.net" }],
+      "destination": "/index-v2.html"
+    }
+  ]
+}

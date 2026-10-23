@@ -1,0 +1,20 @@
+{
+  "v1": {
+    "url": "https://hwajinyu.silee.net/",
+    "heroImage": null,
+    "shareImage": "og-image.jpg?v=20261014-img13",
+    "shareImageWidth": 1200,
+    "shareImageHeight": 1594,
+    "brideFather": { "name": "김영섭", "bank": "우체국", "account": "110007770647" },
+    "brideMother": { "name": "박시자", "bank": "새마을금고", "account": "9003284307959" }
+  },
+  "v2": {
+    "url": "https://hwajinyu2.silee.net/",
+    "heroImage": "/hero-v2.webp",
+    "shareImage": "og-image-v2.jpg?v=20261023-img16",
+    "shareImageWidth": 852,
+    "shareImageHeight": 1280,
+    "brideFather": { "name": "박주호", "bank": "", "account": "" },
+    "brideMother": { "name": "박선자", "bank": "농협", "account": "173089-56-052987" }
+  }
+}

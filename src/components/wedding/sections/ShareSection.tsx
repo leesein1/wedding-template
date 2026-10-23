@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { Check, Link, MessageCircle } from "lucide-react";
 import { useRevealOnScroll } from "@/hooks/useRevealOnScroll";
+import { wedding } from "@/config/wedding";
 
-const invitationUrl = "https://hwajinyu.silee.net/";
+const invitationUrl = wedding.url;
 const shareKey = import.meta.env.VITE_KAKAO_SHARE_JS_KEY || import.meta.env.VITE_KAKAO_MAP_JS_KEY;
 const link = { webUrl: invitationUrl, mobileWebUrl: invitationUrl };
 const shareTemplate = {
@@ -10,9 +11,9 @@ const shareTemplate = {
   content: {
     title: "이세인 ♥ 유화진 결혼합니다",
     description: "2027.01.16(토) 오전 11시",
-    imageUrl: `${invitationUrl}og-image.jpg?v=20261014-img13`,
-    imageWidth: 1200,
-    imageHeight: 1594,
+    imageUrl: `${invitationUrl}${wedding.shareImage}`,
+    imageWidth: wedding.shareImageWidth,
+    imageHeight: wedding.shareImageHeight,
     link,
   },
   buttons: [{ title: "청첩장 보기", link }],

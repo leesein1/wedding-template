@@ -2,6 +2,7 @@
   AccountSection: 축의금 계좌 정보 + 복사 기능
 */
 import { useMemo, useState } from "react";
+import { wedding } from "@/config/wedding";
 
 type AccountSectionProps = {
   debugClass?: string;
@@ -131,7 +132,7 @@ function AccountCard({ item }: { item: AccountItem }) {
         </div>
       </div>
 
-      <div className="px-5 pb-4 pt-3">
+      {item.accountNo ? <div className="px-5 pb-4 pt-3">
         <div className="flex items-center justify-between rounded-2xl bg-[#f3f3f3] px-4 py-3">
           <div className="min-w-0">
             <div className="text-[12px] text-[#8a8a8a]">{item.bankName}</div>
@@ -156,7 +157,7 @@ function AccountCard({ item }: { item: AccountItem }) {
             {/* {item.pay === "kakaopay" ? <PayBadge /> : null} */}
           </div>
         </div>
-      </div>
+      </div> : <div className="h-4" />}
     </div>
   );
 }
@@ -243,17 +244,17 @@ export default function AccountSection({
       {
         side: "bride",
         roleLabel: "신부 아버지",
-        ownerName: "김영섭",
-        bankName: "우체국",
-        accountNo: "110007770647",
+        ownerName: wedding.brideFather.name,
+        bankName: wedding.brideFather.bank,
+        accountNo: wedding.brideFather.account,
         pay: "kakaopay",
       },
       {
         side: "bride",
         roleLabel: "신부 어머니",
-        ownerName: "박시자",
-        bankName: "새마을금고",
-        accountNo: "9003284307959",
+        ownerName: wedding.brideMother.name,
+        bankName: wedding.brideMother.bank,
+        accountNo: wedding.brideMother.account,
         pay: "kakaopay",
       },
     ],

@@ -15,6 +15,7 @@ import {
 } from "react";
 import weGotMarriedSvg from "@/assets/we-got-married.svg?raw";
 import mainPhoto from "@/assets/img/last/preview/img_13.webp";
+import { wedding } from "@/config/wedding";
 import weddingTitleWebp from "@/assets/our-wedding-title-lite.webp";
 
 const titleImageAspectRatio = "754 / 1132";
@@ -496,7 +497,7 @@ export default function HeroPhotoSection({
     >
       {/* 배경 */}
       <img
-        src={mainPhoto}
+        src={wedding.heroImage ?? mainPhoto}
         alt="웨딩 메인 사진"
         fetchPriority="high"
         loading="eager"
