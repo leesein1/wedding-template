@@ -10,8 +10,8 @@
   },
   "v2": {
     "url": "https://hwajinyu2.silee.net/",
-    "heroImage": "/hero-v2.webp",
-    "shareImage": "og-image-v2.jpg?v=20261023-img16",
+    "heroImage": "/hero-v2-img7.webp",
+    "shareImage": "og-image-v2-img7.jpg",
     "shareImageWidth": 852,
     "shareImageHeight": 1280,
     "brideFather": { "name": "박주호", "bank": "", "account": "" },
