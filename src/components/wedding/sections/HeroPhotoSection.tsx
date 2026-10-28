@@ -15,7 +15,7 @@ import {
 } from "react";
 import weGotMarriedSvg from "@/assets/we-got-married.svg?raw";
 import mainPhoto from "@/assets/img/last/preview/img_13.webp";
-import { wedding } from "@/config/wedding";
+import { people, wedding } from "@/config/wedding";
 import weddingTitleWebp from "@/assets/our-wedding-title-lite.webp";
 
 const titleImageAspectRatio = "754 / 1132";
@@ -684,7 +684,7 @@ export default function HeroPhotoSection({
             letterSpacing: "0.06em",
           }}
         >
-          이세인 &amp; 유화진
+          {people.groom} &amp; {people.bride}
         </p>
       </div>
 

@@ -2,7 +2,7 @@
   AccountSection: 축의금 계좌 정보 + 복사 기능
 */
 import { useMemo, useState } from "react";
-import { wedding } from "@/config/wedding";
+import { people, wedding } from "@/config/wedding";
 
 type AccountSectionProps = {
   debugClass?: string;
@@ -211,7 +211,7 @@ export default function AccountSection({
       {
         side: "groom",
         roleLabel: "신랑",
-        ownerName: "이세인",
+        ownerName: people.groom,
         bankName: "신협",
         accountNo: "132-119-560112",
         pay: "kakaopay",
@@ -219,7 +219,7 @@ export default function AccountSection({
       {
         side: "groom",
         roleLabel: "신랑 아버지",
-        ownerName: "이상권",
+        ownerName: people.groomFather,
         bankName: "농협",
         accountNo: "130018-52-012111",
         pay: "kakaopay",
@@ -227,7 +227,7 @@ export default function AccountSection({
       {
         side: "groom",
         roleLabel: "신랑 어머니",
-        ownerName: "박선욱",
+        ownerName: people.groomMother,
         bankName: "농협",
         accountNo: "216034-52-107713",
         pay: "kakaopay",
@@ -236,7 +236,7 @@ export default function AccountSection({
       {
         side: "bride",
         roleLabel: "신부",
-        ownerName: "유화진",
+        ownerName: people.bride,
         bankName: "KB 국민은행",
         accountNo: "20130204171884",
         pay: "kakaopay",
@@ -244,7 +244,7 @@ export default function AccountSection({
       {
         side: "bride",
         roleLabel: "신부 아버지",
-        ownerName: wedding.brideFather.name,
+        ownerName: people.brideFather,
         bankName: wedding.brideFather.bank,
         accountNo: wedding.brideFather.account,
         pay: "kakaopay",
@@ -252,7 +252,7 @@ export default function AccountSection({
       {
         side: "bride",
         roleLabel: "신부 어머니",
-        ownerName: wedding.brideMother.name,
+        ownerName: people.brideMother,
         bankName: wedding.brideMother.bank,
         accountNo: wedding.brideMother.account,
         pay: "kakaopay",

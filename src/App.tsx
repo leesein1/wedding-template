@@ -9,6 +9,7 @@ export default function App() {
     <Routes>
       <Route path="/" element={<MainWedding />} />
       <Route path="/index-v2.html" element={<MainWedding />} />
+      <Route path="/index-v3.html" element={<MainWedding />} />
       <Route path="/invite" element={<Invite />} />
 
       {/* ✅ 포워딩(리다이렉트) */}

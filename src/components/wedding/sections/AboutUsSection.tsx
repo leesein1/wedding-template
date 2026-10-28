@@ -2,6 +2,7 @@
   AboutUsSection: 신랑/신부 상세 프로필 (MBTI, 서약)
 */
 import { Phone } from "lucide-react";
+import { people } from "@/config/wedding";
 
 type BrideGroomSectionProps = {
   debugClass?: string;
@@ -24,7 +25,7 @@ export default function AboutUsSection({
 }: BrideGroomSectionProps) {
   const groom: PersonCard = {
     roleLabel: "신랑",
-    name: "이세인",
+    name: people.groom,
     tel: "010-3100-7025", // 너 번호로 교체
 
     birth: "1998년 09월 26일",
@@ -35,7 +36,7 @@ export default function AboutUsSection({
 
   const bride: PersonCard = {
     roleLabel: "신부",
-    name: "유화진",
+    name: people.bride,
     tel: "010-4032-5936", // 너 번호로 교체
 
     birth: "1999년 08월 12일",

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Check, Link, MessageCircle } from "lucide-react";
 import { useRevealOnScroll } from "@/hooks/useRevealOnScroll";
-import { wedding } from "@/config/wedding";
+import { people, wedding } from "@/config/wedding";
 
 const invitationUrl = wedding.url;
 const shareKey = import.meta.env.VITE_KAKAO_SHARE_JS_KEY || import.meta.env.VITE_KAKAO_MAP_JS_KEY;
@@ -9,7 +9,7 @@ const link = { webUrl: invitationUrl, mobileWebUrl: invitationUrl };
 const shareTemplate = {
   objectType: "feed" as const,
   content: {
-    title: "이세인 ♥ 유화진 결혼합니다",
+    title: `${people.groom} ♥ ${people.bride} 결혼합니다`,
     description: "2027.01.16(토) 오전 11시",
     imageUrl: `${invitationUrl}${wedding.shareImage}`,
     imageWidth: wedding.shareImageWidth,

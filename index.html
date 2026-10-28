@@ -9,11 +9,15 @@
       (function () {
         var root = document.documentElement;
         var host = window.location.hostname;
-        root.dataset.weddingVersion = host === "hwajinyu2.silee.net"
-          ? "v2"
-          : host === "hwajinyu.silee.net"
-            ? "v1"
-            : root.dataset.weddingVersion || "v1";
+        var preview = /^\/index-(v[23])\.html$/.exec(window.location.pathname);
+        var versionsByHost = {
+          "hwajinyu.silee.net": "v1",
+          "hwajinyu2.silee.net": "v2",
+          "hwajinyu22.silee.net": "v3"
+        };
+        root.dataset.weddingVersion = preview
+          ? preview[1]
+          : versionsByHost[host] || root.dataset.weddingVersion || "v1";
       })();
     </script>
     <script>
@@ -62,7 +66,8 @@
         background: #ecebe8;
       }
 
-      html[data-wedding-version="v2"] {
+      html[data-wedding-version="v2"],
+      html[data-wedding-version="v3"] {
         --wedding-hero-image: url("/hero-v2-img7.webp");
       }
 

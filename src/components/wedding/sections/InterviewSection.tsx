@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ChevronDown, Mail } from "lucide-react";
 import groomPhoto from "@/assets/img/groom-childhood.webp";
 import bridePhoto from "@/assets/img/bride-childhood.webp";
+import { people } from "@/config/wedding";
 
 type InterviewSectionProps = { debugClass?: string };
 
@@ -180,14 +181,14 @@ export default function InterviewSection({
         <div className="mt-8 grid grid-cols-2 gap-3">
           <img
             src={groomPhoto}
-            alt="신랑 이세인의 어린 시절"
+            alt={`신랑 ${people.groom}의 어린 시절`}
             loading="lazy"
             className="aspect-square w-full rounded-[6px] object-cover object-[center_15%]"
           />
           <div className="aspect-square overflow-hidden rounded-[6px]">
             <img
               src={bridePhoto}
-              alt="신부 유화진의 어린 시절"
+              alt={`신부 ${people.bride}의 어린 시절`}
               loading="lazy"
               className="h-full w-full scale-[1.4] object-cover object-[center_65%]"
             />

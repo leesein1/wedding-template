@@ -3,6 +3,11 @@
   "routes": [
     {
       "src": "^/$",
+      "has": [{ "type": "host", "value": "hwajinyu22.silee.net" }],
+      "dest": "/index-v3.html"
+    },
+    {
+      "src": "^/$",
       "has": [{ "type": "host", "value": "hwajinyu2.silee.net" }],
       "dest": "/index-v2.html"
     },

@@ -1,6 +1,8 @@
 /*
   CoupleInfoSection: 신랑/신부 간단 소개
 */
+import { people } from "@/config/wedding";
+
 type CoupleInfoSectionProps = {
   debugClass?: string;
 };
@@ -69,7 +71,7 @@ export default function CoupleInfoSection({
             color: "#4d4742",
           }}
         >
-          신랑 이세인 · 신부 유화진
+          신랑 {people.groom} · 신부 {people.bride}
         </p>
       </div>
     </section>
