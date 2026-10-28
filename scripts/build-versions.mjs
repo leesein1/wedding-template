@@ -14,7 +14,8 @@ for (const [version, config] of Object.entries(versions)) {
     .replaceAll(v1.url, config.url)
     .replace(/(<meta property="og:image:width" content=")\d+("\s*\/>)/, `$1${config.shareImageWidth}$2`)
     .replace(/(<meta property="og:image:height" content=")\d+("\s*\/>)/, `$1${config.shareImageHeight}$2`)
-    .replace(/(<link\b(?=[^>]*\brel="preload")(?=[^>]*\bas="image")[^>]*\bhref=")[^"]+("[^>]*>)/, `$1${config.heroImage}$2`);
+    .replace(/(<link\b(?=[^>]*\brel="preload")(?=[^>]*\bas="image")[^>]*\bhref=")[^"]+("[^>]*>)/, (match, before, after) =>
+      config.heroImage ? `${before}${config.heroImage}${after}` : match);
 
   if (html === original || !html.includes(`data-wedding-version="${version}"`) || html.includes(`content="${v1.url}`)) {
     throw new Error(`Could not generate the ${version} invitation HTML`);
